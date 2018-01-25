@@ -1,27 +1,60 @@
 package android.openrunning;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ProgressBar;
+
+import org.osmdroid.api.IMapController;
+import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
 
 public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // set your user agent to prevent getting banned from the osm servers
+        Context ctx = getApplicationContext();
+        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
+
         setContentView(R.layout.activity_main);
 
-        Button viewById = (Button) findViewById(R.id.button);
-        viewById.setOnClickListener(new View.OnClickListener() {
+        // hide ActionBar
+        // getActionBar().hide();
+
+        // adding osmdroid map
+        MapView map = (MapView) findViewById(R.id.map);
+        map.setTileSource(TileSourceFactory.MAPNIK);
+        // set position
+        IMapController mapController = map.getController();
+        mapController.setZoom(9);
+        GeoPoint startPoint = new GeoPoint(51.341236, 12.374643);
+        mapController.setCenter(startPoint);
+
+        // Sleeper
+        new Thread(new Runnable() {
             @Override
-            public void onClick(View view) {
-                Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
-                MainActivity.this.startActivity(myIntent);
+            public void run() {
+                try {
+                    for (int i = 0; i<50; i++) {
+                        Thread.sleep(100);
+                        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+                        progressBar.setProgress(i);
+                    }
+                    Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
+                    MainActivity.this.startActivity(myIntent);
+                } catch (InterruptedException e) {}
             }
-        });
+        }).start();
     }
 }

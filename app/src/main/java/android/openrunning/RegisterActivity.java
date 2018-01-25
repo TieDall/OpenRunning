@@ -32,6 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
         // adding osmdroid map
         MapView map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
+        map.setTilesScaledToDpi(true);
         // set position
         IMapController mapController = map.getController();
         mapController.setZoom(9);
