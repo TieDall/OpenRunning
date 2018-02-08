@@ -45,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         mapController.setCenter(startPoint);
 
         // functions for buttons
+        // buttonRegister
         Button registerButton = (Button) findViewById(R.id.buttonRegister);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,40 +54,20 @@ public class LoginActivity extends AppCompatActivity {
                 LoginActivity.this.startActivity(myIntent);
             }
         });
-
-        /*
-        // showing example route
-        final boolean[] changed = {false};
-        final LocationListener locationListener = new LocationListener() {
+        // buttonLogin
+        Button loginButton = (Button) findViewById(R.id.buttonLogin);
+        loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onLocationChanged(Location location) {
-                mapController.setCenter(new GeoPoint(location.getLatitude(), location.getLongitude()));
-                changed[0] = true;
+            public void onClick(View view) {
+
+                /**
+                 * INSERT CODE --- Login functions
+                 */
+
+                Intent myIntent = new Intent(LoginActivity.this, StartActivity.class);
+                LoginActivity.this.startActivity(myIntent);
             }
-
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {}
-
-            @Override
-            public void onProviderEnabled(String s) {}
-
-            @Override
-            public void onProviderDisabled(String s) {}
-        };
-        final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        lm.requestLocationUpdates("gps", 60000, 1000, locationListener);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(true) {
-                    if (changed[0] == true) {
-                        lm.removeUpdates(locationListener);
-                        break;
-                    }
-                }
-            }
-        }).start();
-        */
+        });
 
     }
 }

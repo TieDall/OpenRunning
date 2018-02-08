@@ -40,11 +40,26 @@ public class RegisterActivity extends AppCompatActivity {
         mapController.setCenter(startPoint);
 
         // functions for buttons
+        // buttonLogin
         Button loginButton = (Button) findViewById(R.id.buttonLogin);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent myIntent = new Intent(RegisterActivity.this, LoginActivity.class);
+                RegisterActivity.this.startActivity(myIntent);
+            }
+        });
+        // buttonRegister
+        Button registerButton = (Button) findViewById(R.id.buttonRegister);
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                /**
+                 * INSERT CODE --- Register functions
+                 */
+
+                Intent myIntent = new Intent(RegisterActivity.this, StartActivity.class);
                 RegisterActivity.this.startActivity(myIntent);
             }
         });
