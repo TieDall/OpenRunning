@@ -8,4 +8,8 @@
     tools:context="android.openrunning.StartActivity"
     tools:showIn="@layout/app_bar_start">
 
+    <org.osmdroid.views.MapView android:id="@+id/map_start"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
 </android.support.constraint.ConstraintLayout>

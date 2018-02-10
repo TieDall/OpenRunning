@@ -9,7 +9,8 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:expanded="false">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -25,31 +26,11 @@
         layout="@layout/content_start" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_position"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:layout_anchor="@+id/include"
-        app:layout_anchorGravity="right|center"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_filter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
-
-    <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:layout_anchor="@+id/include"
-        app:layout_anchorGravity="bottom|center"
         app:srcCompat="@android:drawable/ic_dialog_email" />
 
 </android.support.design.widget.CoordinatorLayout>

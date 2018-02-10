@@ -13,6 +13,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.osmdroid.api.IMapController;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+
 public class StartActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -21,9 +26,10 @@ public class StartActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Start");
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_add);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -40,6 +46,16 @@ public class StartActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        /**
+         * REPLACE CODE BELOW --- start function
+         */
+        MapView map = (MapView) findViewById(R.id.map_start);
+        map.setTileSource(TileSourceFactory.MAPNIK);
+        IMapController mapController = map.getController();
+        mapController.setZoom(9);
+        GeoPoint startPoint = new GeoPoint(51.341236, 12.374643);
+        mapController.setCenter(startPoint);
     }
 
     @Override
@@ -50,13 +66,6 @@ public class StartActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.start, menu);
-        return true;
     }
 
     @Override
@@ -80,8 +89,18 @@ public class StartActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_add) {
-            // Handle the camera action
+        if (id == R.id.nav_home) {
+            
+        } else if (id == R.id.nav_search) {
+
+        } else if (id == R.id.nav_favorites) {
+
+        } else if (id == R.id.nav_add) {
+
+        } else if (id == R.id.nav_release) {
+
+        } else if (id == R.id.nav_delete_user) {
+
         } else if (id == R.id.nav_delete_route) {
 
         }
