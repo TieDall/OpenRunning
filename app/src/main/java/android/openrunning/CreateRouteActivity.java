@@ -22,25 +22,42 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import org.osmdroid.api.IMapController;
+import org.osmdroid.bonuspack.routing.OSRMRoadManager;
+import org.osmdroid.bonuspack.routing.Road;
+import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.MapEventsOverlay;
+import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import java.util.ArrayList;
+
 public class CreateRouteActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, MapEventsReceiver {
+
+    private ArrayList<GeoPoint> waypoints;
+    private MapView map;
+    private Polyline roadOverlay;
+    private boolean gpsFound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_route);
+        waypoints = new ArrayList<GeoPoint>();
+        gpsFound = false;
 
         // for osmdroid
-        Context ctx = getApplicationContext();
+        final Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
         // toolbar
@@ -48,18 +65,40 @@ public class CreateRouteActivity extends AppCompatActivity
         toolbar.setTitle("Strecke erstellen");
         setSupportActionBar(toolbar);
 
+
+
         // add route button
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_commit);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab_send = (FloatingActionButton) findViewById(R.id.fab_send);
+        fab_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (waypoints.size() >= 2){
 
-                /**
-                 * REPLACE CODE BELOW - Intent route add
-                 */
+                    roadCalc();
 
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                }
+                else Toast.makeText(ctx, "Nicht genügend Punkte!", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        FloatingActionButton fab_undo = (FloatingActionButton)findViewById(R.id.fab_undo);
+        fab_undo.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (waypoints.size() >=1){
+                    waypoints.remove((waypoints.size()-1));
+                    map.invalidate();
+
+                    if (map.getOverlays().contains(roadOverlay)){
+
+                        map.getOverlays().remove(roadOverlay);
+                        map.invalidate();
+
+                    }
+                    map.getOverlays().remove(map.getOverlays().size()-1);
+                    map.invalidate();
+
+                }
             }
         });
 
@@ -95,13 +134,42 @@ public class CreateRouteActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public boolean singleTapConfirmedHelper(GeoPoint p) {
+        //Toast.makeText(this, "Tapped", Toast.LENGTH_SHORT).show();
+        return false;
+    }
+    @Override
+    public boolean longPressHelper(GeoPoint p) {
+        Toast.makeText(this, "Tapped", Toast.LENGTH_SHORT).show();
+
+        GeoPoint point = new GeoPoint(p.getLatitude(), p.getLongitude());
+        waypoints.add(point);
+
+        Marker mapMarker = new Marker(map);
+        mapMarker.setPosition(point);
+//        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        map.getOverlays().add(mapMarker);
+        map.invalidate();
+
+
+        return true;
+    }
+
+
     /**
      * Display map with position, zoomed and position overlay.
      */
     private void displayMap(){
         // display map
-        final MapView map = (MapView) findViewById(R.id.map_create_route);
+        map = (MapView) findViewById(R.id.map_create_route);
         map.setTileSource(TileSourceFactory.MAPNIK);
+
+        map.setBuiltInZoomControls(true);
+        map.setMultiTouchControls(true);
+
+        MapEventsOverlay mapEventsOverlay = new MapEventsOverlay( this);
+        map.getOverlays().add(0, mapEventsOverlay);
 
         // specify map presentation
         final IMapController mapController = map.getController();
@@ -109,8 +177,11 @@ public class CreateRouteActivity extends AppCompatActivity
         LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                mapController.setCenter(startPoint);
+                if (gpsFound != true) {
+                    GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                    mapController.setCenter(startPoint);
+                    gpsFound = true;
+                }
             }
             @Override
             public void onStatusChanged(String s, int i, Bundle bundle) {}
@@ -192,4 +263,39 @@ public class CreateRouteActivity extends AppCompatActivity
         return true;
     }
 
+
+    private void roadCalc() {
+
+        if (map.getOverlays().contains(roadOverlay)){
+
+            map.getOverlays().remove(roadOverlay);
+            map.invalidate();
+
+        }
+
+        final RoadManager roadManager = new OSRMRoadManager(getApplicationContext());
+
+        new Thread(new Runnable() {
+            public void run() {
+
+                Road road = roadManager.getRoad(waypoints);
+                roadOverlay = RoadManager.buildRoadOverlay(road);
+                map.getOverlays().add(roadOverlay);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        map.invalidate();
+
+                    }
+                });
+            }
+        }).start();
+
+
+
+
+
+    }
 }
