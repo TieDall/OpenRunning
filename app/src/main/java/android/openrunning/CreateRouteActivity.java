@@ -3,8 +3,6 @@ package android.openrunning;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -13,19 +11,17 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -35,15 +31,13 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
-public class StartActivity extends AppCompatActivity
+public class CreateRouteActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    static final int accessFineLocCode = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start);
+        setContentView(R.layout.activity_create_route);
 
         // for osmdroid
         Context ctx = getApplicationContext();
@@ -51,8 +45,8 @@ public class StartActivity extends AppCompatActivity
 
         // toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Start");
-        setSupportActionBar(toolbar);
+        toolbar.setTitle("Strecke erstellen");
+        // setSupportActionBar(toolbar);                                                            // @TODO toolbar instead of actionbar
 
         // add route button
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_add);
@@ -70,7 +64,7 @@ public class StartActivity extends AppCompatActivity
         });
 
         // navigation drawer
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_create_route);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -158,10 +152,12 @@ public class StartActivity extends AppCompatActivity
      */
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_create_route);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {}
+        } else {
+            super.onBackPressed();
+        }
     }
 
     /**
@@ -183,9 +179,6 @@ public class StartActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_add) {
 
-            Intent myIntent = new Intent(StartActivity.this, CreateRouteActivity.class);
-            StartActivity.this.startActivity(myIntent);
-
         } else if (id == R.id.nav_release) {
 
         } else if (id == R.id.nav_delete_user) {
@@ -198,4 +191,5 @@ public class StartActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }
