@@ -57,6 +57,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void OnRegister(View view) {
+        /*
         String username = ET_benutzername.getText().toString();
         String mailadresse = ET_mailadresse.getText().toString();
         String password = ET_password.getText().toString();
@@ -77,7 +78,7 @@ public class RegisterActivity extends AppCompatActivity {
             startActivity(new Intent(this, RegisterActivity.class));
         }
 
-
+*/
 
     }
 }

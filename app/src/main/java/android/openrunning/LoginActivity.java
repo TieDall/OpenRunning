@@ -60,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
     public void OnLogin(View view) {
+        /*
         String username = UsernameEt.getText().toString();
 
         //Passworthash
@@ -73,7 +74,8 @@ public class LoginActivity extends AppCompatActivity {
 
         BackgroundWorker backgroundWorker = new BackgroundWorker(this);
         backgroundWorker.execute(type, username, hash);
-       // Intent myIntent = new Intent(LoginActivity.this, StartActivity.class);
-       // LoginActivity.this.startActivity(myIntent);
+        */
+        Intent myIntent = new Intent(LoginActivity.this, StartActivity.class);
+        LoginActivity.this.startActivity(myIntent);
     }
 }
