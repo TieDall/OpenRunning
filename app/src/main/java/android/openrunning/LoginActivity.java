@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -20,6 +21,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
 public class LoginActivity extends AppCompatActivity {
+    EditText UsernameEt, PasswordEt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +33,11 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
-        // adding osmdroid map
+        //
+        UsernameEt = (EditText) findViewById(R.id.editTextUsername);
+        PasswordEt = (EditText) findViewById(R.id.editTextPassword);
+
+      // adding osmdroid map
         MapView map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setTilesScaledToDpi(true);
@@ -51,20 +57,23 @@ public class LoginActivity extends AppCompatActivity {
                 LoginActivity.this.startActivity(myIntent);
             }
         });
-        // buttonLogin
-        Button loginButton = (Button) findViewById(R.id.buttonLogin);
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                /**
-                 * INSERT CODE --- Login functions
-                 */
+    }
+    public void OnLogin(View view) {
+        String username = UsernameEt.getText().toString();
 
-                Intent myIntent = new Intent(LoginActivity.this, StartActivity.class);
-                LoginActivity.this.startActivity(myIntent);
-            }
-        });
+        //Passworthash
 
+
+        String password = PasswordEt.getText().toString();
+        String salt = "$2a$12$FwcVI9O/dOqJKWJopl1fz.";
+        String hash = BCrypt.hashpw(password, salt);
+
+        String type = "Login";
+
+        BackgroundWorker backgroundWorker = new BackgroundWorker(this);
+        backgroundWorker.execute(type, username, hash);
+       // Intent myIntent = new Intent(LoginActivity.this, StartActivity.class);
+       // LoginActivity.this.startActivity(myIntent);
     }
 }
