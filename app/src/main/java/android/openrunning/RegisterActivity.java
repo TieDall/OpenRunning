@@ -34,10 +34,7 @@ public class RegisterActivity extends AppCompatActivity {
         ET_password = (EditText) findViewById(R.id.editTextPassword);
         ET_password2 = (EditText) findViewById(R.id.editTextPasswordRepeatation);
 
-        // hide ActionBar
-        getSupportActionBar().hide();
-
-        // adding osmdroid map
+      // adding osmdroid map
         MapView map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setTilesScaledToDpi(true);

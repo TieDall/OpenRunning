@@ -37,10 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         UsernameEt = (EditText) findViewById(R.id.editTextUsername);
         PasswordEt = (EditText) findViewById(R.id.editTextPassword);
 
-        // hide ActionBar
-        getSupportActionBar().hide();
-
-        // adding osmdroid map
+      // adding osmdroid map
         MapView map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setTilesScaledToDpi(true);
