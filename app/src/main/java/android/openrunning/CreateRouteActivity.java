@@ -46,10 +46,10 @@ public class CreateRouteActivity extends AppCompatActivity
         // toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Strecke erstellen");
-        setSupportActionBar(toolbar);                                                            // @TODO toolbar instead of actionbar
+        setSupportActionBar(toolbar);
 
         // add route button
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_add);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_commit);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,7 +100,7 @@ public class CreateRouteActivity extends AppCompatActivity
      */
     private void displayMap(){
         // display map
-        final MapView map = (MapView) findViewById(R.id.map_start);
+        final MapView map = (MapView) findViewById(R.id.map_create_route);
         map.setTileSource(TileSourceFactory.MAPNIK);
 
         // specify map presentation
