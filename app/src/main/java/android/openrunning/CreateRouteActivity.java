@@ -46,7 +46,7 @@ public class CreateRouteActivity extends AppCompatActivity
         // toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Strecke erstellen");
-        // setSupportActionBar(toolbar);                                                            // @TODO toolbar instead of actionbar
+        setSupportActionBar(toolbar);                                                            // @TODO toolbar instead of actionbar
 
         // add route button
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_add);
@@ -187,7 +187,7 @@ public class CreateRouteActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_create_route);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

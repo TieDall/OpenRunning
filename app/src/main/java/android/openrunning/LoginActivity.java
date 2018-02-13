@@ -31,9 +31,6 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
-        // hide ActionBar
-        getSupportActionBar().hide();
-
         // adding osmdroid map
         MapView map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
