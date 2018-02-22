@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:labelFor="@+id/test"
-    android:tooltipText="test"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="android.openrunning.SearchActivity"
     tools:showIn="@layout/app_bar_search">
@@ -109,7 +107,7 @@
         android:layout_marginRight="8dp" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/buttonSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"

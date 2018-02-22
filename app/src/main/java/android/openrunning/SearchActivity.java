@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
 import org.osmdroid.config.Configuration;
 
@@ -44,6 +45,16 @@ public class SearchActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // search button
+        Button registerButton = (Button) findViewById(R.id.buttonSearch);
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent myIntent = new Intent(SearchActivity.this, SearchResultActivity.class);
+                SearchActivity.this.startActivity(myIntent);
+            }
+        });
     }
 
     @Override
