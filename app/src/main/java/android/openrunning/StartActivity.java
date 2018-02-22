@@ -179,6 +179,9 @@ public class StartActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_search) {
 
+            Intent myIntent = new Intent(StartActivity.this, SearchActivity.class);
+            StartActivity.this.startActivity(myIntent);
+
         } else if (id == R.id.nav_favorites) {
 
         } else if (id == R.id.nav_add) {
