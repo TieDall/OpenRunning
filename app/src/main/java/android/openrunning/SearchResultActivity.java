@@ -22,6 +22,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,6 +94,9 @@ public class SearchResultActivity extends AppCompatActivity
 
         if (id == R.id.nav_home) {
 
+            Intent myIntent = new Intent(SearchResultActivity.this, StartActivity.class);
+            SearchResultActivity.this.startActivity(myIntent);
+
         } else if (id == R.id.nav_search) {
 
             Intent myIntent = new Intent(SearchResultActivity.this, SearchActivity.class);
@@ -116,6 +120,29 @@ public class SearchResultActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /*
+        Actions on toolbar.
+     */
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.actions_search_result, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_favorite) {
+            return true;
+        } else if (id == R.id.action_report) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /*
