@@ -35,6 +35,9 @@
         <activity
             android:name=".SearchResultActivity"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".DeleteUserActivity"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

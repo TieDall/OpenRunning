@@ -193,6 +193,9 @@ public class StartActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_delete_user) {
 
+            Intent myIntent = new Intent(StartActivity.this, DeleteUserActivity.class);
+            StartActivity.this.startActivity(myIntent);
+
         } else if (id == R.id.nav_delete_route) {
 
         }
