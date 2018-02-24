@@ -113,6 +113,9 @@ public class SearchResultActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_delete_user) {
 
+            Intent myIntent = new Intent(SearchResultActivity.this, DeleteUserActivity.class);
+            SearchResultActivity.this.startActivity(myIntent);
+
         } else if (id == R.id.nav_delete_route) {
 
         }

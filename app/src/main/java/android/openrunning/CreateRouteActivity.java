@@ -3,6 +3,7 @@ package android.openrunning;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -244,7 +245,13 @@ public class CreateRouteActivity extends AppCompatActivity
 
         if (id == R.id.nav_home) {
 
+            Intent myIntent = new Intent(CreateRouteActivity.this, StartActivity.class);
+            CreateRouteActivity.this.startActivity(myIntent);
+
         } else if (id == R.id.nav_search) {
+
+            Intent myIntent = new Intent(CreateRouteActivity.this, SearchActivity.class);
+            CreateRouteActivity.this.startActivity(myIntent);
 
         } else if (id == R.id.nav_favorites) {
 
@@ -253,6 +260,9 @@ public class CreateRouteActivity extends AppCompatActivity
         } else if (id == R.id.nav_release) {
 
         } else if (id == R.id.nav_delete_user) {
+
+            Intent myIntent = new Intent(CreateRouteActivity.this, DeleteUserActivity.class);
+            CreateRouteActivity.this.startActivity(myIntent);
 
         } else if (id == R.id.nav_delete_route) {
 
