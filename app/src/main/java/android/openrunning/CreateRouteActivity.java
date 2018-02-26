@@ -317,7 +317,11 @@ public class CreateRouteActivity extends AppCompatActivity
         new Thread(new Runnable() {
             public void run() {
 
-                Road road = roadManager.getRoad(waypoints);
+                ArrayList<GeoPoint> bufferwaypoints = (ArrayList<GeoPoint>) waypoints.clone();
+                bufferwaypoints.add(waypoints.get(0));
+
+                Road road = roadManager.getRoad(bufferwaypoints);
+
                 roadOverlay = RoadManager.buildRoadOverlay(road);
                 map.getOverlays().add(roadOverlay);
 
