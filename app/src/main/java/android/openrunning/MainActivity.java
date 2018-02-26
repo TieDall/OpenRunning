@@ -3,6 +3,7 @@ package android.openrunning;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -51,8 +52,18 @@ public class MainActivity extends Activity {
                         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
                         progressBar.setProgress(i);
                     }
-                    Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
-                    MainActivity.this.startActivity(myIntent);
+
+                    SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
+                    String bid = prefs.getString("bid", null);
+                    String type = prefs.getString("type", null);
+
+                    if (bid != null && type != null){
+                        Intent myIntent = new Intent(MainActivity.this, StartActivity.class);
+                        MainActivity.this.startActivity(myIntent);
+                    } else {
+                        Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
+                        MainActivity.this.startActivity(myIntent);
+                    }
                 } catch (InterruptedException e) {}
             }
         }).start();
