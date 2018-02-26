@@ -55,30 +55,4 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
-
-    public void OnRegister(View view) {
-        /*
-        String username = ET_benutzername.getText().toString();
-        String mailadresse = ET_mailadresse.getText().toString();
-        String password = ET_password.getText().toString();
-        String password2 = ET_password2.getText().toString();
-        String type = "Register";
-
-        //Password 1 und 2 vergleichen
-        if (password.equals(password2)){
-            // Hash berechnen
-            String salt = "$2a$12$FwcVI9O/dOqJKWJopl1fz.";
-            String hash = BCrypt.hashpw(password, salt);
-
-            BackgroundWorker backgroundWorker = new BackgroundWorker(this);
-            backgroundWorker.execute(type, username, mailadresse, hash);
-            // Intent myIntent = new Intent(RegisterActivity.this, StartActivity.class);
-            // RegisterActivity.this.startActivity(myIntent);
-        } else {
-            startActivity(new Intent(this, RegisterActivity.class));
-        }
-
-*/
-
-    }
 }
