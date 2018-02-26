@@ -29,6 +29,62 @@ public class DBHandler {
     private static final String DB_PROTOCOL = "http";
     private static final String DB_IP_ADDRESS = "192.168.178.20";
 
+    public static boolean addRoute(String bid, String describtion, String length, String waypoints){
+
+        String add_route_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/route_add.php";
+
+        try {
+            URL url = new URL(add_route_url);
+
+            HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+
+            OutputStream outputStream = httpURLConnection.getOutputStream();
+
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+
+            String post_data =
+                    URLEncoder.encode("creator","UTF-8")+"="+URLEncoder.encode(bid,"UTF-8")+"&"
+                            +URLEncoder.encode("describtion","UTF-8")+"="+URLEncoder.encode(describtion,"UTF-8")+"&"
+                            +URLEncoder.encode("length","UTF-8")+"="+URLEncoder.encode(length,"UTF-8")+"&"
+                            +URLEncoder.encode("rating_count","UTF-8")+"="+URLEncoder.encode("","UTF-8")+"&"
+                            +URLEncoder.encode("rating_average","UTF-8")+"="+URLEncoder.encode("","UTF-8")+"&"
+                            +URLEncoder.encode("waypoints","UTF-8")+"="+URLEncoder.encode(waypoints,"UTF-8");
+
+            bufferedWriter.write(post_data);
+            bufferedWriter.flush();
+            bufferedWriter.close();
+
+            outputStream.close();
+
+            InputStream inputStream = httpURLConnection.getInputStream();
+
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
+
+            String result = "";
+            String line = "";
+            while ((line = bufferedReader.readLine()) != null){
+                result += line;
+            }
+
+            bufferedReader.close();
+            inputStream.close();
+            httpURLConnection.disconnect();
+
+            if (result.equals("New record created successfully")) {
+                return true;
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
     public static String login(String username, String password){
 
         String login_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/login.php";
@@ -65,7 +121,7 @@ public class DBHandler {
 
             return result;
 
-        } catch (MalformedURLException e) {System.out.println(e);} catch (IOException e) {System.out.println(e);}
+        } catch (MalformedURLException e) {} catch (IOException e) {}
 
         return null;
     }

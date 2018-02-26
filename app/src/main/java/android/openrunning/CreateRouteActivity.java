@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -42,6 +43,8 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
 
+import core.DBHandler;
+
 public class CreateRouteActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, MapEventsReceiver {
 
@@ -76,15 +79,25 @@ public class CreateRouteActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
 
-            String type = "Add";
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String waypointsAsString = "";
+                        for (GeoPoint waypoint : waypoints){
+                            waypointsAsString += String.valueOf(waypoint.getLatitude()) + coordinateSeperator + String.valueOf(waypoint.getLongitude()) + geopointSeperator;
+                        }
 
-            String waypointsAsString = "";
-            for (GeoPoint waypoint : waypoints){
-                waypointsAsString += String.valueOf(waypoint.getLatitude()) + coordinateSeperator + String.valueOf(waypoint.getLongitude()) + geopointSeperator;
-            }
+                        SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
+                        String bid = prefs.getString("bid", null);
 
-            BackgroundWorker backgroundWorker = new BackgroundWorker(ctx);
-            backgroundWorker.execute(type, waypointsAsString);
+                        boolean successfull = DBHandler.addRoute(bid, "", "", waypointsAsString);
+                        if (successfull){
+                            System.out.println("yes");
+                        } else {
+                            System.out.println("no");
+                        }
+                    }
+                }).start();
 
 
             }
