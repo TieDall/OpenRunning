@@ -55,7 +55,7 @@ public class StartActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         // add route button
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_add);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_position);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -203,5 +203,28 @@ public class StartActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /*
+        Actions on toolbar.
+     */
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.actions_start, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_search) {
+            return true;
+        } else if (id == R.id.action_add) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
