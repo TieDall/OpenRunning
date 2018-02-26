@@ -46,6 +46,9 @@ public class CreateRouteActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, MapEventsReceiver {
 
     private ArrayList<GeoPoint> waypoints;
+    private String geopointSeperator = ";";
+    private String coordinateSeperator = "_";
+
     private MapView map;
     private Polyline roadOverlay;
     private boolean gpsFound;
@@ -72,11 +75,17 @@ public class CreateRouteActivity extends AppCompatActivity
         fab_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (waypoints.size() >= 2) {
 
-                    roadCalc();
+            String type = "Add";
 
-                } else Toast.makeText(ctx, "Nicht genügend Punkte!", Toast.LENGTH_SHORT).show();
+            String waypointsAsString = "";
+            for (GeoPoint waypoint : waypoints){
+                waypointsAsString += String.valueOf(waypoint.getLatitude()) + coordinateSeperator + String.valueOf(waypoint.getLongitude()) + geopointSeperator;
+            }
+
+            BackgroundWorker backgroundWorker = new BackgroundWorker(ctx);
+            backgroundWorker.execute(type, waypointsAsString);
+
 
             }
         });
@@ -96,6 +105,12 @@ public class CreateRouteActivity extends AppCompatActivity
                     }
                     map.getOverlays().remove(map.getOverlays().size() - 1);
                     map.invalidate();
+
+                    if (waypoints.size() >= 2) {
+
+                        roadCalc();
+
+                    }
 
                 }
             }
@@ -141,7 +156,7 @@ public class CreateRouteActivity extends AppCompatActivity
 
     @Override
     public boolean longPressHelper(GeoPoint p) {
-        Toast.makeText(this, "Tapped", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Tapped", Toast.LENGTH_SHORT).show();
 
         GeoPoint point = new GeoPoint(p.getLatitude(), p.getLongitude());
         waypoints.add(point);
@@ -152,6 +167,12 @@ public class CreateRouteActivity extends AppCompatActivity
         map.getOverlays().add(mapMarker);
         map.invalidate();
 
+
+        if (waypoints.size() >= 2) {
+
+            roadCalc();
+
+        }
 
         return true;
     }
