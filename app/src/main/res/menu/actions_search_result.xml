@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/action_favorite"
-        android:icon="@drawable/ic_menu_camera"
+        android:icon="@drawable/star_outline"
         app:showAsAction="ifRoom"
         android:title="Favoriten" />
 
     <item android:id="@+id/action_report"
-        android:icon="@drawable/ic_menu_gallery"
+        android:icon="@drawable/message_alert"
         app:showAsAction="ifRoom"
         android:title="Melden" />
 

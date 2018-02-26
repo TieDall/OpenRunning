@@ -6,19 +6,19 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/home"
             android:title="Home" />
         <item
             android:id="@+id/nav_search"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/magnify"
             android:title="Strecke suchen" />
         <item
             android:id="@+id/nav_favorites"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/star"
             android:title="Favoriten" />
         <item
             android:id="@+id/nav_add"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/plus_circle_outline"
             android:title="Strecke hinzufügen" />
     </group>
 
@@ -26,7 +26,7 @@
         <menu>
             <item
                 android:id="@+id/nav_release"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/lock_open"
                 android:title="Strecke freigeben" />
         </menu>
     </item>
@@ -35,11 +35,11 @@
         <menu>
             <item
                 android:id="@+id/nav_delete_user"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/account_off"
                 android:title="Nutzer löschen" />
             <item
                 android:id="@+id/nav_delete_route"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/delete"
                 android:title="Strecke löschen" />
         </menu>
     </item>
