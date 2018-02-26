@@ -43,8 +43,34 @@ route_add.php
 	}
  ?>
 ```
-### Anpassung BackgroundWorker.java
-In der Klasse "BackgroundWorker.java" ist der String "url" zu ersetzen mit der IP der Datenbank.
+
+login.php
 ```
-Codesnippet
+<?php
+	require "conn.php";
+	
+	$user_name = $_POST["username"];
+	$user_pass = $_POST["password"];
+	
+	$mysql_qry = "select BID, Benutzertyp from Personen where Benutzername like '$user_name' and Passworthash = '$user_pass';";
+	
+	$result = mysqli_query ($conn ,$mysql_qry);
+	
+	if (mysqli_num_rows($result) > 0){
+		while($row = $result->fetch_assoc()) {
+			echo $row["BID"]. "_" . $row["Benutzertyp"];
+		}
+	}
+	else {
+	  echo "login not success";
+	}
+ ?>
+```
+
+### Anpassung DBHandler.java
+In der Klasse "DBHandler.java" ist der String "DB_IP_ADDRESS" zu ersetzen mit der IP der Datenbank und ggf. "DB_PROTOCOL".
+```
+// Change variables below for configuration
+private static final String DB_PROTOCOL = "http";
+private static final String DB_IP_ADDRESS = "192.168.178.20";
 ```
