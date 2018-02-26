@@ -3,6 +3,7 @@ package android.openrunning;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -66,36 +67,34 @@ public class CreateRouteActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
-
         // add route button
         FloatingActionButton fab_send = (FloatingActionButton) findViewById(R.id.fab_send);
         fab_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (waypoints.size() >= 2){
+                if (waypoints.size() >= 2) {
 
                     roadCalc();
 
-                }
-                else Toast.makeText(ctx, "Nicht genügend Punkte!", Toast.LENGTH_SHORT).show();
+                } else Toast.makeText(ctx, "Nicht genügend Punkte!", Toast.LENGTH_SHORT).show();
 
             }
         });
 
-        FloatingActionButton fab_undo = (FloatingActionButton)findViewById(R.id.fab_undo);
+        FloatingActionButton fab_undo = (FloatingActionButton) findViewById(R.id.fab_undo);
         fab_undo.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (waypoints.size() >=1){
-                    waypoints.remove((waypoints.size()-1));
+                if (waypoints.size() >= 1) {
+                    waypoints.remove((waypoints.size() - 1));
                     map.invalidate();
 
-                    if (map.getOverlays().contains(roadOverlay)){
+                    if (map.getOverlays().contains(roadOverlay)) {
 
                         map.getOverlays().remove(roadOverlay);
                         map.invalidate();
 
                     }
-                    map.getOverlays().remove(map.getOverlays().size()-1);
+                    map.getOverlays().remove(map.getOverlays().size() - 1);
                     map.invalidate();
 
                 }
@@ -139,6 +138,7 @@ public class CreateRouteActivity extends AppCompatActivity
         //Toast.makeText(this, "Tapped", Toast.LENGTH_SHORT).show();
         return false;
     }
+
     @Override
     public boolean longPressHelper(GeoPoint p) {
         Toast.makeText(this, "Tapped", Toast.LENGTH_SHORT).show();
@@ -160,7 +160,7 @@ public class CreateRouteActivity extends AppCompatActivity
     /**
      * Display map with position, zoomed and position overlay.
      */
-    private void displayMap(){
+    private void displayMap() {
         // display map
         map = (MapView) findViewById(R.id.map_create_route);
         map.setTileSource(TileSourceFactory.MAPNIK);
@@ -168,7 +168,7 @@ public class CreateRouteActivity extends AppCompatActivity
         map.setBuiltInZoomControls(true);
         map.setMultiTouchControls(true);
 
-        MapEventsOverlay mapEventsOverlay = new MapEventsOverlay( this);
+        MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
         map.getOverlays().add(0, mapEventsOverlay);
 
         // specify map presentation
@@ -183,14 +183,23 @@ public class CreateRouteActivity extends AppCompatActivity
                     gpsFound = true;
                 }
             }
+
             @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {}
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+            }
+
             @Override
-            public void onProviderEnabled(String s) {}
+            public void onProviderEnabled(String s) {
+            }
+
             @Override
-            public void onProviderDisabled(String s) {}
+            public void onProviderDisabled(String s) {
+            }
         };
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if( location != null ) {
@@ -244,7 +253,13 @@ public class CreateRouteActivity extends AppCompatActivity
 
         if (id == R.id.nav_home) {
 
+            Intent myIntent = new Intent(CreateRouteActivity.this, StartActivity.class);
+            CreateRouteActivity.this.startActivity(myIntent);
+
         } else if (id == R.id.nav_search) {
+
+            Intent myIntent = new Intent(CreateRouteActivity.this, SearchActivity.class);
+            CreateRouteActivity.this.startActivity(myIntent);
 
         } else if (id == R.id.nav_favorites) {
 
@@ -253,6 +268,9 @@ public class CreateRouteActivity extends AppCompatActivity
         } else if (id == R.id.nav_release) {
 
         } else if (id == R.id.nav_delete_user) {
+
+            Intent myIntent = new Intent(CreateRouteActivity.this, DeleteUserActivity.class);
+            CreateRouteActivity.this.startActivity(myIntent);
 
         } else if (id == R.id.nav_delete_route) {
 
