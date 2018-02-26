@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textViewCounter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -38,10 +38,9 @@
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
         android:text="Registrieren"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintBottom_toTopOf="@+id/textViewCounter"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:onClick="OnRegister"/>
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <EditText
         android:id="@+id/editTextPasswordRepeatation"
