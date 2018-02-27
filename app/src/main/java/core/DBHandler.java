@@ -27,7 +27,7 @@ public class DBHandler {
 
     // Change variables below for configuration
     private static final String DB_PROTOCOL = "http";
-    private static final String DB_IP_ADDRESS = "192.168.178.20";
+    private static final String DB_IP_ADDRESS = "172.31.155.179";
 
     public static boolean addRoute(String bid, String describtion, String length, String waypoints){
 
@@ -73,6 +73,7 @@ public class DBHandler {
             inputStream.close();
             httpURLConnection.disconnect();
 
+            System.out.println(result);
             if (result.equals("New record created successfully")) {
                 return true;
             }
