@@ -55,6 +55,7 @@ public class CreateRouteActivity extends AppCompatActivity
     private MapView map;
     private Polyline roadOverlay;
     private boolean gpsFound;
+    private double length;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +91,7 @@ public class CreateRouteActivity extends AppCompatActivity
                         SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
                         String bid = prefs.getString("bid", null);
 
-                        boolean successfull = DBHandler.addRoute(bid, "", "", waypointsAsString);
+                        boolean successfull = DBHandler.addRoute(bid, "", ""+length, waypointsAsString);
                         if (successfull){
                             System.out.println("yes");
                         } else {
@@ -334,6 +335,7 @@ public class CreateRouteActivity extends AppCompatActivity
                 bufferwaypoints.add(waypoints.get(0));
 
                 Road road = roadManager.getRoad(bufferwaypoints);
+                length = road.mLength;
 
                 roadOverlay = RoadManager.buildRoadOverlay(road);
                 map.getOverlays().add(roadOverlay);

@@ -122,6 +122,8 @@ public class DBHandler {
 
             return result;
 
+
+
         } catch (MalformedURLException e) {} catch (IOException e) {}
 
         return null;

@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void run() {
                         String loginReturn = DBHandler.login(username, password);
 
-                        if (!loginReturn.equals("login not success")){
+                        if (!loginReturn.equals("login not success") || loginReturn != null  ){
                             int i = loginReturn.indexOf("_");
                             String bid = loginReturn.substring(0,i);
                             String type = loginReturn.substring(i+1,loginReturn.length());
