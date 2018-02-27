@@ -13,8 +13,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import org.osmdroid.config.Configuration;
+
+import core.DBHandler;
 
 public class DeleteUserActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -25,7 +31,7 @@ public class DeleteUserActivity extends AppCompatActivity
         setContentView(R.layout.activity_delete_user);
 
         // for osmdroid
-        Context ctx = getApplicationContext();
+        final Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
         // toolbar
@@ -43,6 +49,59 @@ public class DeleteUserActivity extends AppCompatActivity
         // navigation
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // functions for buttons
+        // buttonRegister
+        Button deleteButton = (Button) findViewById(R.id.buttonDelete);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                final String user = ((EditText) findViewById(R.id.editTextUsername)).getText().toString();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                    if (!user.isEmpty()) {
+
+                        if (DBHandler.removeUser(user).equals(user)) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ((EditText) findViewById(R.id.editTextUsername)).setText("");
+                                    Toast.makeText(ctx, "erfolgreich gelöscht", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        } else if (DBHandler.removeUser(user).equals("not found")){
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ((EditText) findViewById(R.id.editTextUsername)).setText("");
+                                    Toast.makeText(ctx, "Nutzer nicht gefunden", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }else {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ((EditText) findViewById(R.id.editTextUsername)).setText("");
+                                    Toast.makeText(ctx, "Fehler", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    }else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(ctx, "kein Nutzer angegeben", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                    }
+                }).start();
+            }
+        });
     }
 
     /**
