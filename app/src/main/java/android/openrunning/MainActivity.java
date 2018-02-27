@@ -59,14 +59,20 @@ public class MainActivity extends Activity {
                     String bid = prefs.getString("bid", null);
                     String type = prefs.getString("type", null);
 
+                    SharedPreferences.Editor editor = getSharedPreferences("openrunning", MODE_PRIVATE).edit();
+
                     //locking for changed user infos
                     String result = DBHandler.updateuser(bid);
 
                     if (result.equals("0") || result.equals("1") || result.equals("2") || result.equals("3")){
-                        type = result;
+                        editor.putString("type", result);
+                        editor.commit();
                         Intent myIntent = new Intent(MainActivity.this, StartActivity.class);
                         MainActivity.this.startActivity(myIntent);
                     } else {
+                        editor.putString("type", null);
+                        editor.putString("bid", null);
+                        editor.commit();
                         Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
                         MainActivity.this.startActivity(myIntent);
                     }
