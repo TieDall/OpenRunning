@@ -115,7 +115,7 @@ getRoutes.php
 	require "conn.php";
 
 	$length_min = $_POST["length_min"];
-  $length_max = $_POST["length_max"];
+  	$length_max = $_POST["length_max"];
 	$rating = $_POST["rating"];
 
 	$mysql_qry = "select SID from Strecken where Streckenlaenge <= '$length_max' and Streckenlaenge >= '$length_min' and Durchschnittsbewertung >= '$rating';";
