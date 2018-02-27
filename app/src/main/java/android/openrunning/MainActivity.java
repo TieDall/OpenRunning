@@ -18,6 +18,8 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
+import core.DBHandler;
+
 public class MainActivity extends Activity {
 
     @Override
@@ -57,7 +59,11 @@ public class MainActivity extends Activity {
                     String bid = prefs.getString("bid", null);
                     String type = prefs.getString("type", null);
 
-                    if (bid != null && type != null){
+                    //locking for changed user infos
+                    String result = DBHandler.updateuser(bid);
+
+                    if (result.equals("0") || result.equals("1") || result.equals("2") || result.equals("3")){
+                        type = result;
                         Intent myIntent = new Intent(MainActivity.this, StartActivity.class);
                         MainActivity.this.startActivity(myIntent);
                     } else {
