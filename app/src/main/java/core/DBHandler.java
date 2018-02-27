@@ -257,4 +257,138 @@ public class DBHandler {
 
 
     }
+
+    public static String register(String username, String mailadresse, String hash) {
+        String register_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/register.php";
+
+        try {
+            URL url = new URL(register_url);
+
+            HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+
+            OutputStream outputStream = httpURLConnection.getOutputStream();
+
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+
+            String post_data =
+                    URLEncoder.encode("username","UTF-8")+"="+URLEncoder.encode(username,"UTF-8")+"&"
+                            +URLEncoder.encode("password","UTF-8")+"="+URLEncoder.encode(hash,"UTF-8")+"&"
+                            +URLEncoder.encode("mailadresse","UTF-8")+"="+URLEncoder.encode(mailadresse,"UTF-8");
+
+            bufferedWriter.write(post_data);
+            bufferedWriter.flush();
+            bufferedWriter.close();
+
+            outputStream.close();
+
+            InputStream inputStream = httpURLConnection.getInputStream();
+
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
+
+            String result = "";
+            String line = "";
+            while ((line = bufferedReader.readLine()) != null){
+                result += line;
+            }
+
+            bufferedReader.close();
+            inputStream.close();
+            httpURLConnection.disconnect();
+
+            return result;
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static String gethash(String username) {
+        String login_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/getHash.php";
+
+        try {
+
+            URL url = new URL(login_url);
+            HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+
+            OutputStream outputStream = httpURLConnection.getOutputStream();
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+            String post_data = URLEncoder.encode("username","UTF-8")+"="+URLEncoder.encode(username,"UTF-8");
+            bufferedWriter.write(post_data);
+            bufferedWriter.flush();
+            bufferedWriter.close();
+            outputStream.close();
+
+            InputStream inputStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
+
+            String result = "";
+            String line = "";
+            while ((line = bufferedReader.readLine()) != null){
+                result += line;
+            }
+
+            bufferedReader.close();
+            inputStream.close();
+            httpURLConnection.disconnect();
+
+            return result;
+
+
+
+        } catch (MalformedURLException e) {} catch (IOException e) {}
+
+        return null;
+    }
+
+    public static String getUser_info(String username, String mailadresse) {
+        String login_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/getUser_info.php";
+
+        try {
+
+            URL url = new URL(login_url);
+            HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+
+            OutputStream outputStream = httpURLConnection.getOutputStream();
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+            String post_data = URLEncoder.encode("username","UTF-8")+"="+URLEncoder.encode(username,"UTF-8")+"&"
+                    +URLEncoder.encode("mailadresse","UTF-8")+"="+URLEncoder.encode(mailadresse,"UTF-8");
+            bufferedWriter.write(post_data);
+            bufferedWriter.flush();
+            bufferedWriter.close();
+            outputStream.close();
+
+            InputStream inputStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
+
+            String result = "";
+            String line = "";
+            while ((line = bufferedReader.readLine()) != null){
+                result += line;
+            }
+
+            bufferedReader.close();
+            inputStream.close();
+            httpURLConnection.disconnect();
+
+            return result;
+
+
+
+        } catch (MalformedURLException e) {} catch (IOException e) {}
+
+        return null;
+    }
 }

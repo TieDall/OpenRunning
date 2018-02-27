@@ -24,6 +24,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
 import core.DBHandler;
+import core.Passwordhash;
 
 public class LoginActivity extends AppCompatActivity {
     EditText UsernameEt, PasswordEt;
@@ -74,33 +75,53 @@ public class LoginActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        String loginReturn = DBHandler.login(username, password);
 
-                        if (!loginReturn.equals("login not success") || loginReturn != null  ){
-                            int i = loginReturn.indexOf("_");
-                            String bid = loginReturn.substring(0,i);
-                            String type = loginReturn.substring(i+1,loginReturn.length());
+                        String hash = DBHandler.gethash(username);
 
-                            SharedPreferences.Editor editor = getSharedPreferences("openrunning", MODE_PRIVATE).edit();
-                            editor.putString("bid", bid);
-                            editor.putString("type", type);
-                            editor.commit();
+                        if (!hash.equals("no user")) {
+                            if (Passwordhash.checkpw(password, hash)) {
 
-                            Intent myIntent = new Intent(LoginActivity.this, StartActivity.class);
-                            LoginActivity.this.startActivity(myIntent);
+                                String loginReturn = DBHandler.login(username, hash);
 
-                        } else {
+                                if (!loginReturn.equals("login not success") || loginReturn != null) {
+                                    int i = loginReturn.indexOf("_");
+                                    String bid = loginReturn.substring(0, i);
+                                    String type = loginReturn.substring(i + 1, loginReturn.length());
+
+                                    SharedPreferences.Editor editor = getSharedPreferences("openrunning", MODE_PRIVATE).edit();
+                                    editor.putString("bid", bid);
+                                    editor.putString("type", type);
+                                    editor.commit();
+
+                                    Intent myIntent = new Intent(LoginActivity.this, StartActivity.class);
+                                    LoginActivity.this.startActivity(myIntent);
+
+                                } else {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(ctx, "Login fehlgeschlagen!", Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                }
+                            } else {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(ctx, "Login fehlgeschlagen!", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        }else {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     Toast.makeText(ctx, "Login fehlgeschlagen!", Toast.LENGTH_LONG).show();
                                 }
                             });
-
                         }
                     }
                 }).start();
-
             }
         });
     }
