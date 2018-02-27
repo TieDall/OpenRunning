@@ -26,10 +26,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import org.osmdroid.bonuspack.routing.OSRMRoadManager;
+import org.osmdroid.bonuspack.routing.Road;
+import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Polyline;
+
+import java.util.ArrayList;
+
+import core.DBHandler;
+import core.Route;
 
 public class SearchResultActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -37,10 +48,13 @@ public class SearchResultActivity extends AppCompatActivity
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
 
+    static ArrayList<Route> routes;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
+        routes = new ArrayList<>();
 
         // for osmdroid
         Context ctx = getApplicationContext();
@@ -63,9 +77,26 @@ public class SearchResultActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         // Slider
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        mViewPager = (ViewPager) findViewById(R.id.viewPager);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Bundle b = getIntent().getExtras();
+
+                int i = 1;
+
+                while(b.get(""+i) != null){
+                    int sid = (Integer) b.get(""+i);
+                    Route route = DBHandler.getRoute(sid);
+                    routes.add(route);
+                    i++;
+                }
+
+                mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+                mViewPager = (ViewPager) findViewById(R.id.viewPager);
+                mViewPager.setAdapter(mSectionsPagerAdapter);
+            }
+        }).start();
+
     }
 
     /**
@@ -155,6 +186,7 @@ public class SearchResultActivity extends AppCompatActivity
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
+
             super(fm);
         }
 
@@ -186,10 +218,6 @@ public class SearchResultActivity extends AppCompatActivity
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.map, container, false);
-
-            MapView map = (MapView) rootView.findViewById(R.id.map);
-            map.setTileSource(TileSourceFactory.MAPNIK);
-
             return rootView;
         }
     }

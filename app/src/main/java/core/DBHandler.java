@@ -129,4 +129,132 @@ public class DBHandler {
         return null;
     }
 
+    public static String getRoutes(String length, float rating) {
+
+        String login_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/getRoutes.php";
+        double tolerance = 0.5;
+        double length_min = Double.valueOf(length)-(Double.valueOf(length)*tolerance);
+        double length_max = Double.valueOf(length)+(Double.valueOf(length)*tolerance);
+
+        try {
+
+            URL url = new URL(login_url);
+            HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+
+            OutputStream outputStream = httpURLConnection.getOutputStream();
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+            String post_data = URLEncoder.encode("length_min","UTF-8")+"="+URLEncoder.encode(String.valueOf(length_min),"UTF-8")+"&"
+                    +URLEncoder.encode("length_max","UTF-8")+"="+URLEncoder.encode(String.valueOf(length_max),"UTF-8")+"&"
+                    +URLEncoder.encode("rating","UTF-8")+"="+URLEncoder.encode(Float.toString(rating),"UTF-8");
+            bufferedWriter.write(post_data);
+            bufferedWriter.flush();
+            bufferedWriter.close();
+            outputStream.close();
+
+            InputStream inputStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
+
+            String result = "";
+            String line = "";
+            while ((line = bufferedReader.readLine()) != null){
+                result += line;
+            }
+
+            bufferedReader.close();
+            inputStream.close();
+            httpURLConnection.disconnect();
+
+            return result;
+
+        } catch (MalformedURLException e) {} catch (IOException e) {}
+
+        return null;
+    }
+
+    public static Route getRoute(int sid){
+        int bid = 0;
+        String description = null;
+        double length = 0;
+        int numberVotes = 0;
+        double averageVotes = 0;
+        String waypoints = null;
+
+        String login_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/route_info.php";
+
+        try {
+
+            URL url = new URL(login_url);
+            HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+
+            OutputStream outputStream = httpURLConnection.getOutputStream();
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+            String post_data = URLEncoder.encode("id","UTF-8")+"="+URLEncoder.encode(""+sid,"UTF-8");
+            bufferedWriter.write(post_data);
+            bufferedWriter.flush();
+            bufferedWriter.close();
+            outputStream.close();
+
+            InputStream inputStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
+
+            String line = "";
+            while ((line = bufferedReader.readLine()) != null){
+
+                if(!line.equals("failure")) {
+                    int index;
+
+                    index = line.indexOf("?");
+                    bid = Integer.parseInt(line.substring(0, index));
+                    line = line.substring(index+1);
+
+                    index = line.indexOf("?");
+                    description = line.substring(0, index);
+                    line = line.substring(index+1);
+
+                    index = line.indexOf("?");
+                    length = Double.parseDouble(line.substring(0, index));
+                    line = line.substring(index+1);
+
+                    index = line.indexOf("?");
+                    numberVotes = Integer.parseInt(line.substring(0, index));
+                    line = line.substring(index+1);
+
+                    index = line.indexOf("?");
+                    averageVotes = Double.parseDouble(line.substring(0, index));
+                    line = line.substring(index+1);
+
+                    waypoints = line;
+
+                } else {
+                    System.out.println("fail");
+                }
+
+            }
+
+            bufferedReader.close();
+            inputStream.close();
+            httpURLConnection.disconnect();
+
+            System.out.println(sid);
+            System.out.println(bid);
+            System.out.println(description);
+            System.out.println(length);
+            System.out.println(numberVotes);
+            System.out.println(averageVotes);
+            System.out.println(waypoints);
+
+            return new Route(sid, bid, description, length, numberVotes, averageVotes, waypoints);
+
+        } catch (MalformedURLException e) {} catch (IOException e) {}
+
+        return null;
+
+
+    }
 }

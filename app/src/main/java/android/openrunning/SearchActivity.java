@@ -3,6 +3,7 @@ package android.openrunning;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,8 +17,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RatingBar;
+import android.widget.Toast;
 
 import org.osmdroid.config.Configuration;
+
+import java.util.ArrayList;
+
+import core.DBHandler;
 
 public class SearchActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -28,7 +36,7 @@ public class SearchActivity extends AppCompatActivity
         setContentView(R.layout.activity_search);
 
         // for osmdroid
-        Context ctx = getApplicationContext();
+        final Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
         // toolbar
@@ -47,12 +55,57 @@ public class SearchActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         // search button
-        Button registerButton = (Button) findViewById(R.id.buttonSearch);
-        registerButton.setOnClickListener(new View.OnClickListener() {
+        Button searchButton = (Button) findViewById(R.id.buttonSearch);
+        searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent myIntent = new Intent(SearchActivity.this, SearchResultActivity.class);
-                SearchActivity.this.startActivity(myIntent);
+
+
+                final String distance = ((EditText) findViewById(R.id.editTextDistance)).getText().toString();
+                final String length = ((EditText) findViewById(R.id.editTextRouteLength)).getText().toString();
+                final float rating = ((RatingBar) findViewById(R.id.ratingBar)).getRating();
+
+                if (!distance.isEmpty() || !length.isEmpty()){
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent myIntent = new Intent(SearchActivity.this, SearchResultActivity.class);
+                            Bundle b = new Bundle();
+
+                            String resultRoutes = DBHandler.getRoutes(length, rating);
+
+                            int index;
+
+                            index = resultRoutes.indexOf("_");
+                            b.putInt("1", Integer.parseInt(resultRoutes.substring(0, index)));
+                            resultRoutes = resultRoutes.substring(index+1);
+
+                            if (resultRoutes.contains("_")) {
+                                index = resultRoutes.indexOf("_");
+                                b.putInt("2", Integer.parseInt(resultRoutes.substring(0, index)));
+                                resultRoutes = resultRoutes.substring(index + 1);
+
+                                if (resultRoutes.contains("_")) {
+                                    index = resultRoutes.indexOf("_");
+                                    b.putInt("3", Integer.parseInt(resultRoutes.substring(0, index)));
+                                }
+                            }
+
+                            myIntent.putExtras(b);
+                            startActivity(myIntent);
+                            finish();
+                            SearchActivity.this.startActivity(myIntent);
+                        }
+                    }).start();
+                } else {
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(ctx, "Suche ungültig", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
             }
         });
     }
