@@ -70,20 +70,20 @@ login.php
 register.php
 ```
 <?php
-require "conn.php";
-$user_name = $_POST["username"];
-$user_pass = $_POST["password"];
-$Mailadresse = $_POST["mailadresse"];
-$mysql_qry = "insert into Personen (Benutzername, Mailadresse, Passworthash) values ('$user_name','$Mailadresse','$user_pass');";
+	require "conn.php";
+	$user_name = $_POST["username"];
+	$user_pass = $_POST["password"];
+	$Mailadresse = $_POST["mailadresse"];
+	$mysql_qry = "insert into Personen (Benutzername, Mailadresse, Passworthash) values ('$user_name','$Mailadresse','$user_pass');";
 
-if ($conn->query($mysql_qry) === TRUE){
-  echo "Insert Succesfull";
-}
-else {
-  echo "Error: " . $mysql_qry . "<br>" . $conn->error;
-}
+	if ($conn->query($mysql_qry) === TRUE){
+  		echo "Insert Succesfull";
+	}
+	else {
+  		echo "Error: " . $mysql_qry . "<br>" . $conn->error;
+	}
 
-$conn->close();
+	$conn->close();
  ?>
 ```
 
