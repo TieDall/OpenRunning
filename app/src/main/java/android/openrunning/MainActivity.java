@@ -56,8 +56,8 @@ public class MainActivity extends Activity {
                     }
 
                     SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
-                    String bid = prefs.getString("bid", null);
-                    String type = prefs.getString("type", null);
+                    String bid = prefs.getString("bid", "");
+                    String type = prefs.getString("type", "");
 
                     SharedPreferences.Editor editor = getSharedPreferences("openrunning", MODE_PRIVATE).edit();
 
@@ -70,8 +70,8 @@ public class MainActivity extends Activity {
                         Intent myIntent = new Intent(MainActivity.this, StartActivity.class);
                         MainActivity.this.startActivity(myIntent);
                     } else {
-                        editor.putString("type", null);
-                        editor.putString("bid", null);
+                        editor.putString("type", "");
+                        editor.putString("bid", "");
                         editor.commit();
                         Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
                         MainActivity.this.startActivity(myIntent);
