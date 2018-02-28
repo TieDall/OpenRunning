@@ -51,18 +51,48 @@ public class StartActivity extends AppCompatActivity
         toolbar.setTitle("Start");
         setSupportActionBar(toolbar);
 
-        // add route button
+        // update postion button
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_position);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                /**
-                 * REPLACE CODE BELOW - Intent route add
-                 */
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // display map
+                        final MapView map = (MapView) findViewById(R.id.map_start);
+                        map.setTileSource(TileSourceFactory.MAPNIK);
 
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                        // specify map presentation
+                        final IMapController mapController = map.getController();
+                        mapController.setZoom(12);
+                        LocationListener locationListener = new LocationListener() {
+                            @Override
+                            public void onLocationChanged(Location location) {
+                                GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                                mapController.setCenter(startPoint);
+                            }
+                            @Override
+                            public void onStatusChanged(String s, int i, Bundle bundle) {}
+                            @Override
+                            public void onProviderEnabled(String s) {}
+                            @Override
+                            public void onProviderDisabled(String s) {}
+                        };
+                        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        if( location != null ) {
+                            GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                            mapController.setCenter(startPoint);
+                        }
+                        MyLocationNewOverlay mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getApplicationContext()),map);
+                        mLocationOverlay.enableMyLocation();
+                        map.getOverlays().add(mLocationOverlay);
+                    }
+                });
+
             }
         });
 
