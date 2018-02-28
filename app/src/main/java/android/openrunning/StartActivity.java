@@ -242,9 +242,7 @@ public class StartActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.activity_start_drawer, menu);
-
+        getMenuInflater().inflate(R.menu.actions_start, menu);
         return true;
     }
 
