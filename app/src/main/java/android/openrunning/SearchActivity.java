@@ -2,6 +2,7 @@ package android.openrunning;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -30,6 +31,8 @@ import core.DBHandler;
 public class SearchActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    NavigationView navigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,8 +54,9 @@ public class SearchActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        hideItem();
 
         // search button
         Button searchButton = (Button) findViewById(R.id.buttonSearch);
@@ -153,5 +157,20 @@ public class SearchActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    private void hideItem(){
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        Menu nav_Menu = navigationView.getMenu();
+
+        SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
+        String type = prefs.getString("type", "");
+
+        if (type.equals("2")) {
+            nav_Menu.findItem(R.id.nav_release).setVisible(true);
+        }else if (type.equals("3")) {
+            nav_Menu.findItem(R.id.nav_release).setVisible(true);
+            nav_Menu.findItem(R.id.nav_delete_route).setVisible(true);
+            nav_Menu.findItem(R.id.nav_delete_user).setVisible(true);
+        }
     }
 }

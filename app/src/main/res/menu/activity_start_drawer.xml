@@ -22,23 +22,28 @@
             android:title="Strecke hinzufügen" />
     </group>
 
-    <item android:title="Support Bereich">
+    <item android:title="Support Bereich"
+        android:id="@+id/nav_extend">
         <menu>
             <item
                 android:id="@+id/nav_release"
+                android:visible="false"
                 android:icon="@drawable/lock_open"
                 android:title="Strecke freigeben" />
         </menu>
     </item>
 
-    <item android:title="Administrator Bereich">
+    <item android:title="Administrator Bereich"
+        android:id="@+id/nav_admin">
         <menu>
             <item
                 android:id="@+id/nav_delete_user"
+                android:visible="false"
                 android:icon="@drawable/account_off"
                 android:title="Nutzer löschen" />
             <item
                 android:id="@+id/nav_delete_route"
+                android:visible="false"
                 android:icon="@drawable/delete"
                 android:title="Strecke löschen" />
         </menu>

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -45,6 +46,8 @@ import core.Route;
 public class SearchResultActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    NavigationView navigationView;
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
 
@@ -73,8 +76,9 @@ public class SearchResultActivity extends AppCompatActivity
         toggle.syncState();
 
         // navigation
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        hideItem();
 
         // Slider
         new Thread(new Runnable() {
@@ -219,6 +223,21 @@ public class SearchResultActivity extends AppCompatActivity
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.map, container, false);
             return rootView;
+        }
+    }
+    private void hideItem(){
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        Menu nav_Menu = navigationView.getMenu();
+
+        SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
+        String type = prefs.getString("type", "");
+
+        if (type.equals("2")) {
+            nav_Menu.findItem(R.id.nav_release).setVisible(true);
+        }else if (type.equals("3")) {
+            nav_Menu.findItem(R.id.nav_release).setVisible(true);
+            nav_Menu.findItem(R.id.nav_delete_route).setVisible(true);
+            nav_Menu.findItem(R.id.nav_delete_user).setVisible(true);
         }
     }
 }
