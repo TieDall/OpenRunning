@@ -148,8 +148,6 @@ register.php
 	else {
  		echo "Error: " . $mysql_qry . "<br>" . $conn->error;
 	}
-
-	$conn->close();
  ?>
  ```
  
