@@ -15,76 +15,9 @@ conn.php - Hierbei müssen der Datenbank-Benutzername, das Datenbank-Passwort, s
 	$mysql_username = "root";
 	$mysql_password = "";
 	$server_name = "localhost";
-	
+
 	$conn = mysqli_connect ($server_name, $mysql_username, $mysql_password, $db_name);
 ?>
-```
-
-route_add.php
-```
-<?php
-	require "conn.php";
-	
-	$creator = $_POST["creator"];
-	$describtion = $_POST["describtion"];
-	$length = $_POST["length"];
-	$rating_count = $_POST["rating_count"];
-	$rating_average = $_POST["rating_average"];
-	$waypoints = $_POST["waypoints"];
-	
-	
-	
-	$mysql_qry = "INSERT INTO `strecken`(`Ersteller`, `Beschreibung`, `Streckenlaenge`, `Anzahl_Bewertungen`, `Durchschnittsbewertung`, `Wegpunkte`) VALUES ('$creator','$describtion','$length','$rating_count','$rating_average','$waypoints');";
-		
-	if ($conn->query($mysql_qry) === TRUE) {
-		echo "New record created successfully";
-	} else {
-		echo "Error: " . $mysql_qry . "<br>" . $conn->error;
-	}
- ?>
-```
-
-login.php
-```
-<?php
-	require "conn.php";
-	
-	$user_name = $_POST["username"];
-	$user_pass = $_POST["password"];
-	
-	$mysql_qry = "select BID, Benutzertyp from Personen where Benutzername like '$user_name' and Passworthash = '$user_pass';";
-	
-	$result = mysqli_query ($conn ,$mysql_qry);
-	
-	if (mysqli_num_rows($result) > 0){
-		while($row = $result->fetch_assoc()) {
-			echo $row["BID"]. "_" . $row["Benutzertyp"];
-		}
-	}
-	else {
-	  echo "login not success";
-	}
- ?>
-```
-
-register.php
-```
-<?php
-	require "conn.php";
-	$user_name = $_POST["username"];
-	$user_pass = $_POST["password"];
-	$Mailadresse = $_POST["mailadresse"];
-	$mysql_qry = "insert into Personen (Benutzername, Mailadresse, Passworthash) values ('$user_name','$Mailadresse','$user_pass');";
-
-	if ($conn->query($mysql_qry) === TRUE){
-  		echo "Insert Succesfull";
-	}
-	else {
-  		echo "Error: " . $mysql_qry . "<br>" . $conn->error;
-	}
-
-	$conn->close();
- ?>
 ```
 
 getHash.php
@@ -133,28 +66,6 @@ getRoutes.php
  ?>
 ```
 
-route_info.php
-```
-<?php
-	require "conn.php";
-
-	$id = $_POST["id"];
-
-	$mysql_qry = "select Ersteller, Beschreibung, Streckenlaenge, Anzahl_Bewertungen, Durchschnittsbewertung, Wegpunkte from strecken where SID = '$id';";
-
-	$result = mysqli_query ($conn ,$mysql_qry);
-
-	if (mysqli_num_rows($result) > 0){
-		while($row = $result->fetch_assoc()) {
-			echo $row["Ersteller"]. "?" . $row["Beschreibung"]. "?" . $row["Streckenlaenge"]. "?" . $row["Anzahl_Bewertungen"]. "?" . $row["Durchschnittsbewertung"]. "?" . $row["Wegpunkte"];
-		}
-	}
-	else {
-	  echo "failure";
-	}
- ?>
-```
-
 getUser_info.php
 ```
 <?php
@@ -174,6 +85,140 @@ getUser_info.php
 	}
 	else {
 	  echo "";
+	}
+ ?>
+ ```
+getUser_update.php
+ ```
+ <?php
+	require "conn.php";
+
+	$user_type = $_POST["bid"];
+
+	$mysql_qry = "select Benutzertyp from Personen where BID like '$user_type';";
+
+	$result = mysqli_query ($conn ,$mysql_qry);
+
+	if (mysqli_num_rows($result) > 0){
+		while($row = $result->fetch_assoc()) {
+			echo $row["Benutzertyp"];
+		}
+	}
+	else {
+	  echo "not found";
+	}
+ ?>
+ ```
+ 
+login.php
+ ```
+ <?php
+	require "conn.php";
+
+	$user_name = $_POST["username"];
+	$user_pass = $_POST["password"];
+
+	$mysql_qry = "select BID, Benutzertyp from Personen where Benutzername like '$user_name' and Passworthash = '$user_pass';";
+
+	$result = mysqli_query ($conn ,$mysql_qry);
+
+	if (mysqli_num_rows($result) > 0){
+		while($row = $result->fetch_assoc()) {
+			echo $row["BID"]. "_" . $row["Benutzertyp"];
+		}
+	}
+	else {
+	  echo "login not success";
+	}
+ ?>
+ ```
+ 
+register.php
+ ```
+ <?php
+	require "conn.php";
+	$user_name = $_POST["username"];
+	$user_pass = $_POST["password"];
+	$Mailadresse = $_POST["mailadresse"];
+	$mysql_qry = "insert into Personen (Benutzername, Mailadresse, Passworthash) values ('$user_name','$Mailadresse','$user_pass');";
+
+	if ($conn->query($mysql_qry) === TRUE){
+  		echo "Insert Succesfull";
+	}
+	else {
+ 		echo "Error: " . $mysql_qry . "<br>" . $conn->error;
+	}
+
+	$conn->close();
+ ?>
+ ```
+ 
+removeUser.php
+ ```
+<?php
+	require "conn.php";
+
+	$user_name = $_POST["username"];
+
+	$mysql_qry1 = "select Benutzername from Personen where Benutzername like '$user_name';";
+	$mysql_qry2 = "delete from personen where Benutzername like '$user_name';";
+
+	$result = mysqli_query ($conn ,$mysql_qry1);
+	mysqli_query ($conn ,$mysql_qry2);
+
+	if (mysqli_num_rows($result) > 0){
+		while($row = $result->fetch_assoc()) {
+			echo $row["Benutzername"];
+		}
+	}
+	else {
+		echo "not found";
+	}
+ ?>
+ ```
+
+route_add.php
+```
+<?php
+	require "conn.php";
+
+	$creator = $_POST["creator"];
+	$describtion = $_POST["describtion"];
+	$length = $_POST["length"];
+	$rating_count = $_POST["rating_count"];
+	$rating_average = $_POST["rating_average"];
+	$waypoints = $_POST["waypoints"];
+
+
+
+	$mysql_qry = "INSERT INTO `strecken`(`Ersteller`, `Beschreibung`, `Streckenlaenge`, `Anzahl_Bewertungen`, `Durchschnittsbewertung`, `Wegpunkte`) VALUES ('$creator','$describtion','$length','$rating_count','$rating_average','$waypoints');";
+
+	if ($conn->query($mysql_qry) === TRUE) {
+		echo "New record created successfully";
+	} else {
+		echo "Error: " . $mysql_qry . "<br>" . $conn->error;
+	}
+ ?>
+```
+
+route_info.php
+```
+<?php
+	require "conn.php";
+
+	$id = $_POST["id"];
+
+	$mysql_qry = "select Ersteller, Beschreibung, Streckenlaenge, Anzahl_Bewertungen, Durchschnittsbewertung, Wegpunkte from strecken where SID = '$id';";
+
+	$result = mysqli_query ($conn ,$mysql_qry);
+
+	if (mysqli_num_rows($result) > 0){
+		while($row = $result->fetch_assoc()) {
+			echo $row["Ersteller"]. "?" . $row["Beschreibung"]. "?" . $row["Streckenlaenge"]. "?" . $row["Anzahl_Bewertungen"]. "?" . $row["Durchschnittsbewertung"]. "?" . $row["Wegpunkte"];
+		}
+	}
+	else {
+	  echo "failure";
 	}
  ?>
 ```
