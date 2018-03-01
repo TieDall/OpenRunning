@@ -182,6 +182,25 @@ public class CreateRouteActivity extends AppCompatActivity
         map.invalidate();
 
 
+        //onClickListener to delete single markers
+        mapMarker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker, MapView map) {
+                map.getOverlayManager().remove(marker);
+                waypoints.remove(marker.getPosition());
+                //checking for waypointsArray size to prevent crashing of app when deleted marker is last remaining marker on map
+                // --> because roadCalc will try to calculate a route with only one waypoint
+                if (waypoints.size() > 1) {
+                    roadCalc();
+                } else {
+                    map.getOverlayManager().remove(roadOverlay);
+                    map.invalidate();
+                }
+                return false;
+            }
+        });
+
+
         if (waypoints.size() >= 2) {
 
             roadCalc();
