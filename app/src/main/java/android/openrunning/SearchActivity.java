@@ -2,6 +2,9 @@ package android.openrunning;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -21,11 +24,16 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
+import org.osmdroid.bonuspack.routing.OSRMRoadManager;
+import org.osmdroid.bonuspack.routing.Road;
+import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
 
 import core.DBHandler;
+import core.Route;
 
 public class SearchActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -72,25 +80,73 @@ public class SearchActivity extends AppCompatActivity
                             Intent myIntent = new Intent(SearchActivity.this, SearchResultActivity.class);
                             Bundle b = new Bundle();
 
+                            // ArrayList which matches all parameters
+                            ArrayList<String> result = new ArrayList<>();
+
+                            // routes which matches the rating and length (with tolerance) only ID
+                            // @see DataHandler.getRoutes()
                             String resultRoutes = DBHandler.getRoutes(length, rating);
 
-                            int index;
+                            // calculate distance
+                            String[] routes = resultRoutes.split("_");
+                            for (String route : routes) {
+                                // get data from route
+                                Route routeInfo = DBHandler.getRoute(Integer.parseInt(route));
 
-                            index = resultRoutes.indexOf("_");
-                            b.putInt("1", Integer.parseInt(resultRoutes.substring(0, index)));
-                            resultRoutes = resultRoutes.substring(index+1);
+                                String waypoints = routeInfo.getWaypoints();
+                                String[] waypointsAsArray = waypoints.split(";");
+                                for (String waypoint : waypointsAsArray ){
+                                    String[] waypointLatLong = waypoint.split("_");
+                                    GeoPoint geoPoint = new GeoPoint(Double.parseDouble(waypointLatLong[0]), Double.parseDouble(waypointLatLong[1]));
 
-                            if (resultRoutes.contains("_")) {
-                                index = resultRoutes.indexOf("_");
-                                b.putInt("2", Integer.parseInt(resultRoutes.substring(0, index)));
-                                resultRoutes = resultRoutes.substring(index + 1);
+                                    // get current position
+                                    LocationListener locationListener = new LocationListener() {
+                                        @Override
+                                        public void onLocationChanged(Location location) {}
 
-                                if (resultRoutes.contains("_")) {
-                                    index = resultRoutes.indexOf("_");
-                                    b.putInt("3", Integer.parseInt(resultRoutes.substring(0, index)));
+                                        @Override
+                                        public void onStatusChanged(String s, int i, Bundle bundle) {}
+
+                                        @Override
+                                        public void onProviderEnabled(String s) {}
+
+                                        @Override
+                                        public void onProviderDisabled(String s) {}
+                                    };
+                                    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                                    Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                                    // calculate
+                                    ArrayList<GeoPoint> geoPoints = new ArrayList<>();
+                                    geoPoints.add(new GeoPoint(location.getLatitude(), location.getLongitude()));
+                                    geoPoints.add(geoPoint);
+                                    RoadManager roadManager = new OSRMRoadManager(getApplicationContext());
+                                    Road road = roadManager.getRoad(geoPoints);
+                                    double mLength = road.mLength;
+
+                                    System.out.println("=====================");
+                                    System.out.println("distance: "+distance);
+                                    System.out.println("current: "+mLength);
+                                    System.out.println("=====================");
+
+                                    if (Double.parseDouble(distance) >= mLength){
+                                        result.add(route);
+                                        System.out.println("match");
+                                        break;
+                                    } else {
+                                        System.out.println("no match");
+                                    }
                                 }
+
                             }
 
+                            // add routes to next activity
+                            int index = 1;
+                            for (String currentResult : result){
+                                b.putInt("1", Integer.parseInt(resultRoutes.substring(0, index)));
+                                index++;
+                            }
                             myIntent.putExtras(b);
                             startActivity(myIntent);
                             finish();
