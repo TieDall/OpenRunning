@@ -125,17 +125,9 @@ public class SearchActivity extends AppCompatActivity
                                     Road road = roadManager.getRoad(geoPoints);
                                     double mLength = road.mLength;
 
-                                    System.out.println("=====================");
-                                    System.out.println("distance: "+distance);
-                                    System.out.println("current: "+mLength);
-                                    System.out.println("=====================");
-
                                     if (Double.parseDouble(distance) >= mLength){
                                         result.add(route);
-                                        System.out.println("match");
                                         break;
-                                    } else {
-                                        System.out.println("no match");
                                     }
                                 }
 
