@@ -164,6 +164,9 @@ public class SearchActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_delete_route) {
 
+            Intent myIntent = new Intent(SearchActivity.this, DeleteRouteActivity.class);
+            SearchActivity.this.startActivity(myIntent);
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

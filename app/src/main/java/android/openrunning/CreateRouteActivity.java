@@ -313,6 +313,9 @@ public class CreateRouteActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_delete_route) {
 
+            Intent myIntent = new Intent(CreateRouteActivity.this, DeleteRouteActivity.class);
+            CreateRouteActivity.this.startActivity(myIntent);
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_create_route);

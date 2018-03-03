@@ -1,21 +1,14 @@
 package android.openrunning;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -27,24 +20,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import org.osmdroid.bonuspack.routing.OSRMRoadManager;
-import org.osmdroid.bonuspack.routing.Road;
-import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.config.Configuration;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.Polyline;
 
 import java.util.ArrayList;
 
 import core.DBHandler;
 import core.Route;
 
-public class SearchResultActivity extends AppCompatActivity
+public class DeleteRouteActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     Context ctx;
@@ -58,7 +43,7 @@ public class SearchResultActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_result);
+        setContentView(R.layout.activity_delete_route);
         routes = new ArrayList<>();
 
         // for osmdroid
@@ -67,7 +52,7 @@ public class SearchResultActivity extends AppCompatActivity
 
         // toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Suchergebnisse");
+        toolbar.setTitle("Löschen:");
         setSupportActionBar(toolbar);
 
         // navigation drawer
@@ -86,16 +71,7 @@ public class SearchResultActivity extends AppCompatActivity
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Bundle b = getIntent().getExtras();
 
-                int i = 1;
-
-                while(b.get(""+i) != null){
-                    int sid = (Integer) b.get(""+i);
-                    Route route = DBHandler.getRoute(sid);
-                    routes.add(route);
-                    i++;
-                }
 
                 mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
                 mViewPager = (ViewPager) findViewById(R.id.viewPager);
@@ -131,32 +107,32 @@ public class SearchResultActivity extends AppCompatActivity
 
         if (id == R.id.nav_home) {
 
-            Intent myIntent = new Intent(SearchResultActivity.this, StartActivity.class);
-            SearchResultActivity.this.startActivity(myIntent);
+            Intent myIntent = new Intent(DeleteRouteActivity.this, StartActivity.class);
+            DeleteRouteActivity.this.startActivity(myIntent);
 
         } else if (id == R.id.nav_search) {
 
-            Intent myIntent = new Intent(SearchResultActivity.this, SearchActivity.class);
-            SearchResultActivity.this.startActivity(myIntent);
+            Intent myIntent = new Intent(DeleteRouteActivity.this, SearchActivity.class);
+            DeleteRouteActivity.this.startActivity(myIntent);
 
         } else if (id == R.id.nav_favorites) {
 
         } else if (id == R.id.nav_add) {
 
-            Intent myIntent = new Intent(SearchResultActivity.this, CreateRouteActivity.class);
-            SearchResultActivity.this.startActivity(myIntent);
+            Intent myIntent = new Intent(DeleteRouteActivity.this, CreateRouteActivity.class);
+            DeleteRouteActivity.this.startActivity(myIntent);
 
         } else if (id == R.id.nav_release) {
 
         } else if (id == R.id.nav_delete_user) {
 
-            Intent myIntent = new Intent(SearchResultActivity.this, DeleteUserActivity.class);
-            SearchResultActivity.this.startActivity(myIntent);
+            Intent myIntent = new Intent(DeleteRouteActivity.this, DeleteUserActivity.class);
+            DeleteRouteActivity.this.startActivity(myIntent);
 
         } else if (id == R.id.nav_delete_route) {
 
-            Intent myIntent = new Intent(SearchResultActivity.this, DeleteRouteActivity.class);
-            SearchResultActivity.this.startActivity(myIntent);
+            Intent myIntent = new Intent(DeleteRouteActivity.this, DeleteRouteActivity.class);
+            DeleteRouteActivity.this.startActivity(myIntent);
 
         }
 
@@ -171,7 +147,7 @@ public class SearchResultActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.actions_search_result, menu);
+        getMenuInflater().inflate(R.menu.actions_delete_route, menu);
         return true;
     }
 
@@ -179,10 +155,31 @@ public class SearchResultActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_favorite) {
+        if (id == R.id.action_delete) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
+                    int i = 1;
+                    String sid = prefs.getString(""+i, "");
+                    sid = "2";
+                    String result = DBHandler.deleteRoute(sid);
+
+
+                    if (result.equals("erfolgreich")) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(ctx, "erfolgreich gelöscht", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                }
+            }).start();
+
 
             return true;
-        } else if (id == R.id.action_report) {
+        } else if (id == R.id.action_keep) {
 
             new Thread(new Runnable() {
                 @Override
@@ -191,16 +188,14 @@ public class SearchResultActivity extends AppCompatActivity
                     int i = 1;
                     String sid = prefs.getString(""+i, "");
                     sid = "2";
-                    String result = DBHandler.setRouteStatus(sid, "2");
-                    System.out.println(result);
+                    String result = DBHandler.setRouteStatus(sid, "1");
 
-                    System.out.println(sid);
 
-                    if (result.equals("gemeldet")) {
+                    if (result.equals("erfolgreich")) {
                         runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(ctx, "erlogreich gemeldet", Toast.LENGTH_LONG).show();
+                            Toast.makeText(ctx, "nicht gelöscht", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
