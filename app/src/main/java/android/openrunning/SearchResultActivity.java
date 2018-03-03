@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
@@ -46,6 +47,7 @@ import core.Route;
 public class SearchResultActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    Context ctx;
     NavigationView navigationView;
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -60,7 +62,7 @@ public class SearchResultActivity extends AppCompatActivity
         routes = new ArrayList<>();
 
         // for osmdroid
-        Context ctx = getApplicationContext();
+        ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
         // toolbar
@@ -175,8 +177,32 @@ public class SearchResultActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_favorite) {
+
             return true;
         } else if (id == R.id.action_report) {
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
+                    int i = 1;
+                    String sid = prefs.getString(""+i, "");
+                    sid = "2";
+                    String result = DBHandler.setRouteStatus(sid, "3");
+                    System.out.println(result);
+
+                    System.out.println(sid);
+
+                    if (result.equals("gemeldet")) {
+                        runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(ctx, "erlogreich gemeldet", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+                    }
+            }).start();
             return true;
         }
 
