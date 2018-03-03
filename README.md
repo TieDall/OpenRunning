@@ -3,7 +3,31 @@ Ziel des Projektes „OpenRunning“ ist die Entwicklung einer Open Source Andro
 ## Getting Started
 ### Aufsetzen MySQL-Datenbank
 ```
-SQL-Skript
+drop DATABASE if EXISTS openrunning;
+create DATABASE if not exists openrunning;
+
+create table if not exists Personen (
+	BID int not null AUTO_INCREMENT,
+    	Benutzertyp int(1),
+   	Benutzername varchar(15),
+    	Mailadresse varchar(30),
+	Passworthash varchar(500),
+    	Favoriten varchar(50) DEFAULT '',
+    	PRIMARY KEY (BID)
+);
+
+create table if not EXISTS Strecken (
+	SID int not null AUTO_INCREMENT,
+    	Ersteller int,
+    	Beschreibung varchar(500) DEFAULT '',
+    	Streckenlaenge double,
+    	Anzahl_Bewertungen int DEFAULT 0,
+    	Durchschnittsbewertung double DEFAULT 0,
+   	Wegpunkte varchar(500),
+	Streckenstatus int(1),
+   	PRIMARY KEY(SID),
+    	FOREIGN KEY(Ersteller) REFERENCES Personen(BID) on delete cascade
+);
 ```
 ### Aufsetzen Webserver
 Folgende Dateien müssen erstellt und durch den Webserver zur Verfügung gestellt werden (BEACHTE: Dateien müssen sich im Root-Verzeichnis befinden!):
@@ -140,13 +164,13 @@ register.php
 	$user_name = $_POST["username"];
 	$user_pass = $_POST["password"];
 	$Mailadresse = $_POST["mailadresse"];
-	$mysql_qry = "insert into Personen (Benutzername, Mailadresse, Passworthash) values ('$user_name','$Mailadresse','$user_pass');";
+	$mysql_qry = "insert into Personen (Benutzertyp, Benutzername, Mailadresse, Passworthash) values (0, '$user_name','$Mailadresse','$user_pass');";
 
 	if ($conn->query($mysql_qry) === TRUE){
   		echo "Insert Succesfull";
 	}
 	else {
- 		echo "Error: " . $mysql_qry . "<br>" . $conn->error;
+  		echo "Error: " . $mysql_qry . "<br>" . $conn->error;
 	}
  ?>
  ```
@@ -189,7 +213,7 @@ route_add.php
 
 
 
-	$mysql_qry = "INSERT INTO `strecken`(`Ersteller`, `Beschreibung`, `Streckenlaenge`, `Anzahl_Bewertungen`, `Durchschnittsbewertung`, `Wegpunkte`) VALUES ('$creator','$describtion','$length','$rating_count','$rating_average','$waypoints');";
+	$mysql_qry = "INSERT INTO `strecken`(`Ersteller`, `Beschreibung`, `Streckenlaenge`, `Anzahl_Bewertungen`, `Durchschnittsbewertung`, `Wegpunkte`, `Streckenstatus`) VALUES ('$creator','$describtion','$length','$rating_count','$rating_average','$waypoints', 0);";
 
 	if ($conn->query($mysql_qry) === TRUE) {
 		echo "New record created successfully";
@@ -220,6 +244,48 @@ route_info.php
 	}
  ?>
 ```
+
+setRouteStatus.php
+```
+<?php
+	require "conn.php";
+
+	$sid = $_POST["sid"];
+	$status = $_POST["status"];
+
+
+	$mysql_qry = "update strecken Set Streckenstatus = '$status' where SID = '$sid';";
+
+	$result = mysqli_query ($conn ,$mysql_qry);
+
+	if ($conn->query($mysql_qry) === TRUE) {
+		echo "erfolgreich";
+	}
+	else {
+	  echo "failure";
+	}
+ ?>
+ ```
+ 
+deleteRoute.php
+```
+<?php
+	require "conn.php";
+
+	$sid = $_POST["sid"];
+
+	$mysql_qry = "delete from strecken where SID like '$sid';";
+
+	$result = mysqli_query ($conn ,$mysql_qry);
+
+  if ($conn->query($mysql_qry) === TRUE) {
+		echo "erfolgreich";
+	}
+	else {
+		echo "error";
+	}
+ ?>
+``` 
 
 ### Anpassung DBHandler.java
 In der Klasse "DBHandler.java" ist der String "DB_IP_ADDRESS" zu ersetzen mit der IP der Datenbank und ggf. "DB_PROTOCOL".
