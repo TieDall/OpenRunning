@@ -78,27 +78,39 @@ public class SearchActivity extends AppCompatActivity
 
                             String resultRoutes = DBHandler.getRoutes(length, rating);
 
-                            int index;
+                            if (!resultRoutes.equals("error")) {
 
-                            index = resultRoutes.indexOf("_");
-                            b.putInt("1", Integer.parseInt(resultRoutes.substring(0, index)));
-                            resultRoutes = resultRoutes.substring(index+1);
+                                int index;
 
-                            if (resultRoutes.contains("_")) {
                                 index = resultRoutes.indexOf("_");
-                                b.putInt("2", Integer.parseInt(resultRoutes.substring(0, index)));
+                                b.putInt("1", Integer.parseInt(resultRoutes.substring(0, index)));
                                 resultRoutes = resultRoutes.substring(index + 1);
 
                                 if (resultRoutes.contains("_")) {
                                     index = resultRoutes.indexOf("_");
-                                    b.putInt("3", Integer.parseInt(resultRoutes.substring(0, index)));
-                                }
-                            }
+                                    b.putInt("2", Integer.parseInt(resultRoutes.substring(0, index)));
+                                    resultRoutes = resultRoutes.substring(index + 1);
 
-                            myIntent.putExtras(b);
-                            startActivity(myIntent);
-                            finish();
-                            SearchActivity.this.startActivity(myIntent);
+                                    if (resultRoutes.contains("_")) {
+                                        index = resultRoutes.indexOf("_");
+                                        b.putInt("3", Integer.parseInt(resultRoutes.substring(0, index)));
+                                    }
+                                }
+
+                                myIntent.putExtras(b);
+                                startActivity(myIntent);
+                                finish();
+                                SearchActivity.this.startActivity(myIntent);
+
+                            }else {
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(ctx, "Fehler in der Datenbank", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
                         }
                     }).start();
                 } else {
