@@ -26,8 +26,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
@@ -49,40 +51,33 @@ public class SearchResultActivity extends AppCompatActivity
     private ViewPager mViewPager;
 
     static ArrayList<Route> routes;
+    private String[] splittedWaypoints;
+    private String[] splittedWaypointsLL;
+
+    private MapView map;
+    private Polyline roadOverlay;
+    ArrayList<GeoPoint> waypoints = new ArrayList<>();
+
+    private int in =1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_result);
+        setContentView(R.layout.map);
         routes = new ArrayList<>();
-
+        map= (MapView) findViewById(R.id.map);
         // for osmdroid
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
-        // toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Suchergebnisse");
-        setSupportActionBar(toolbar);
 
-        // navigation drawer
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
 
-        // navigation
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        // Slider
         new Thread(new Runnable() {
             @Override
             public void run() {
                 Bundle b = getIntent().getExtras();
 
-                int i = 1;
+                int i = 0;
 
                 while(b.get(""+i) != null){
                     int sid = (Integer) b.get(""+i);
@@ -91,13 +86,100 @@ public class SearchResultActivity extends AppCompatActivity
                     i++;
                 }
 
-                mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-                mViewPager = (ViewPager) findViewById(R.id.viewPager);
-                mViewPager.setAdapter(mSectionsPagerAdapter);
+                String[] singleWaypoints = routes.get(0).getWaypoints().toString().split(";");
+                TextView length = (TextView) findViewById(R.id.textViewLength);
+                length.setText(String.valueOf(routes.get(0).getLength()));
+
+                TextView rating = (TextView) findViewById(R.id.textViewRating);
+                rating.setText(String.valueOf(routes.get(0).getAverageVotes()));
+
+                for(String waypoint : singleWaypoints){
+                    splittedWaypoints=waypoint.split("_");
+                    Double latidude = Double.parseDouble(splittedWaypoints[0]);
+                    Double longitude = Double.parseDouble(splittedWaypoints[1]);
+                    GeoPoint p = new GeoPoint(latidude, longitude);
+                    waypoints.add(p);
+
+
+                }
+
+                roadCalc();
+
+
             }
         }).start();
 
+
+        FloatingActionButton fab_Next = (FloatingActionButton) findViewById(R.id.fab_Next);
+        fab_Next.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                int index = in;
+
+                String[] singleWaypoints = routes.get(index).getWaypoints().toString().split(";");
+
+                TextView length = (TextView) findViewById(R.id.textViewLength);
+                length.setText(String.valueOf(routes.get(index).getLength()));
+
+                TextView rating = (TextView) findViewById(R.id.textViewRating);
+                rating.setText(String.valueOf(routes.get(index).getAverageVotes()));
+
+                for(String waypoint : singleWaypoints){
+                    splittedWaypoints=waypoint.split("_");
+                    Double latidude = Double.parseDouble(splittedWaypoints[0]);
+                    Double longitude = Double.parseDouble(splittedWaypoints[1]);
+                    GeoPoint p = new GeoPoint(latidude, longitude);
+                    waypoints.add(p);
+                }
+
+                roadCalc();
+
+                if(in == routes.size()-1) {
+                    in = 0;
+
+                } else {in++;}
+            }
+        });
+
+        FloatingActionButton fab_Back = (FloatingActionButton) findViewById(R.id.fab_Back);
+        fab_Back.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                if(in > 0){
+
+                    in--;
+                }
+
+                int index = in;
+
+                String[] singleWaypoints = routes.get(index).getWaypoints().toString().split(";");
+
+                TextView length = (TextView) findViewById(R.id.textViewLength);
+                length.setText(String.valueOf(routes.get(index).getLength()));
+
+                TextView rating = (TextView) findViewById(R.id.textViewRating);
+                rating.setText(String.valueOf(routes.get(index).getAverageVotes()));
+
+                for(String waypoint : singleWaypoints){
+                    splittedWaypoints=waypoint.split("_");
+                    Double latidude = Double.parseDouble(splittedWaypoints[0]);
+                    Double longitude = Double.parseDouble(splittedWaypoints[1]);
+                    GeoPoint p = new GeoPoint(latidude, longitude);
+                    waypoints.add(p);
+                }
+
+                roadCalc();
+
+                if(in == routes.size()-1) {
+                    in = 0;
+
+                } else {in++;}
+            }
+        });
+
     }
+
+
 
     /**
      * Close navigation drawer when opened and do nothing when navigation drawer is closed.
@@ -220,5 +302,50 @@ public class SearchResultActivity extends AppCompatActivity
             View rootView = inflater.inflate(R.layout.map, container, false);
             return rootView;
         }
+    }
+
+
+    private void roadCalc() {
+
+        if (map.getOverlays().contains(roadOverlay)){
+
+            map.getOverlays().remove(roadOverlay);
+            map.invalidate();
+
+        }
+
+        final RoadManager roadManager = new OSRMRoadManager(getApplicationContext());
+
+        new Thread(new Runnable() {
+            public void run() {
+
+                ArrayList<GeoPoint> bufferwaypoints = (ArrayList<GeoPoint>) waypoints.clone();
+                bufferwaypoints.add(waypoints.get(0));
+
+                Road road = roadManager.getRoad(bufferwaypoints);
+                //length = road.mLength;
+
+                roadOverlay = RoadManager.buildRoadOverlay(road);
+                map.getOverlays().add(roadOverlay);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        final IMapController mapController = map.getController();
+                        mapController.setZoom(12);
+                        mapController.setCenter(waypoints.get(0));
+                        map.invalidate();
+                        waypoints.clear();
+
+                    }
+                });
+            }
+        }).start();
+
+
+
+
+
     }
 }

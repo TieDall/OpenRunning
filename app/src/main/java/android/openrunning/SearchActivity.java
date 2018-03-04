@@ -70,12 +70,24 @@ public class SearchActivity extends AppCompatActivity
                         @Override
                         public void run() {
                             Intent myIntent = new Intent(SearchActivity.this, SearchResultActivity.class);
+
+
                             Bundle b = new Bundle();
 
                             String resultRoutes = DBHandler.getRoutes(length, rating);
 
-                            int index;
+                            String[] routesSIDs = resultRoutes.split("_");
+                            System.out.println(routesSIDs.length);
 
+                            System.out.println(resultRoutes);
+
+                            for(int i=0; i<routesSIDs.length; i++){
+
+                                b.putInt(""+i, Integer.parseInt(routesSIDs[i]));
+
+                            }
+
+/*
                             index = resultRoutes.indexOf("_");
                             b.putInt("1", Integer.parseInt(resultRoutes.substring(0, index)));
                             resultRoutes = resultRoutes.substring(index+1);
@@ -90,8 +102,10 @@ public class SearchActivity extends AppCompatActivity
                                     b.putInt("3", Integer.parseInt(resultRoutes.substring(0, index)));
                                 }
                             }
+*/
 
                             myIntent.putExtras(b);
+
                             startActivity(myIntent);
                             finish();
                             SearchActivity.this.startActivity(myIntent);
