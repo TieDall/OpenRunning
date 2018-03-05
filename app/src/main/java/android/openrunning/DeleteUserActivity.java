@@ -3,6 +3,7 @@ package android.openrunning;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
@@ -24,6 +25,8 @@ import core.DBHandler;
 
 public class DeleteUserActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
+
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +50,9 @@ public class DeleteUserActivity extends AppCompatActivity
         toggle.syncState();
 
         // navigation
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        hideItem();
 
         // functions for buttons
         // buttonRegister
@@ -149,12 +153,21 @@ public class DeleteUserActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_delete_user) {
 
+            Intent myIntent = new Intent(DeleteUserActivity.this, DeleteUserActivity.class);
+            DeleteUserActivity.this.startActivity(myIntent);
+
         } else if (id == R.id.nav_delete_route) {
+
+            Intent myIntent = new Intent(DeleteUserActivity.this, DeleteRouteActivity.class);
+            DeleteUserActivity.this.startActivity(myIntent);
+
 
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+
+        //Warum läuft das nicht?!
+        //drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -178,5 +191,19 @@ public class DeleteUserActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+    private void hideItem(){
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        Menu nav_Menu = navigationView.getMenu();
 
+        SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
+        String type = prefs.getString("type", "");
+
+        if (type.equals("2")) {
+            nav_Menu.findItem(R.id.nav_release).setVisible(true);
+        }else if (type.equals("3")) {
+            nav_Menu.findItem(R.id.nav_release).setVisible(true);
+            nav_Menu.findItem(R.id.nav_delete_route).setVisible(true);
+            nav_Menu.findItem(R.id.nav_delete_user).setVisible(true);
+        }
+    }
 }

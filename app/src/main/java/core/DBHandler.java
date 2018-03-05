@@ -469,4 +469,86 @@ public class DBHandler {
 
         return "Error";
     }
+
+    public static String setRouteStatus(String sid, String status) {
+
+        String login_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/setRouteStatus.php";
+
+        try {
+
+            URL url = new URL(login_url);
+            HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+
+            OutputStream outputStream = httpURLConnection.getOutputStream();
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+            String post_data = URLEncoder.encode("sid","UTF-8")+"="+URLEncoder.encode(sid,"UTF-8")+"&"
+                    +URLEncoder.encode("status","UTF-8")+"="+URLEncoder.encode(status,"UTF-8");
+            bufferedWriter.write(post_data);
+            bufferedWriter.flush();
+            bufferedWriter.close();
+            outputStream.close();
+
+            InputStream inputStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
+
+            String result = "";
+            String line = "";
+            while ((line = bufferedReader.readLine()) != null){
+                result += line;
+            }
+
+            bufferedReader.close();
+            inputStream.close();
+            httpURLConnection.disconnect();
+
+            return result;
+
+        } catch (MalformedURLException e) {} catch (IOException e) {}
+
+        return "Error";
+
+
+    }
+
+    public static String deleteRoute(String sid) {
+        String login_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/deleteRoute.php";
+
+        try {
+
+            URL url = new URL(login_url);
+            HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+
+            OutputStream outputStream = httpURLConnection.getOutputStream();
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+            String post_data = URLEncoder.encode("sid","UTF-8")+"="+URLEncoder.encode(sid,"UTF-8");
+            bufferedWriter.write(post_data);
+            bufferedWriter.flush();
+            bufferedWriter.close();
+            outputStream.close();
+
+            InputStream inputStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
+
+            String result = "";
+            String line = "";
+            while ((line = bufferedReader.readLine()) != null){
+                result += line;
+            }
+
+            bufferedReader.close();
+            inputStream.close();
+            httpURLConnection.disconnect();
+
+            return result;
+
+        } catch (MalformedURLException e) {} catch (IOException e) {}
+
+        return "Error";
+    }
 }

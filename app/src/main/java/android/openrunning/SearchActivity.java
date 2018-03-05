@@ -3,6 +3,7 @@ package android.openrunning;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -41,6 +42,7 @@ import core.Route;
 public class SearchActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    NavigationView navigationView;
     private Location location;
 
     @Override
@@ -94,8 +96,10 @@ public class SearchActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        // navigation look depends on user type
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        hideItem();
 
         // search button
         Button searchButton = (Button) findViewById(R.id.buttonSearch);
@@ -113,7 +117,6 @@ public class SearchActivity extends AppCompatActivity
                         @Override
                         public void run() {
                             Intent myIntent = new Intent(SearchActivity.this, SearchResultActivity.class);
-
 
                             Bundle b = new Bundle();
 
@@ -216,10 +219,28 @@ public class SearchActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_delete_route) {
 
+            Intent myIntent = new Intent(SearchActivity.this, DeleteRouteActivity.class);
+            SearchActivity.this.startActivity(myIntent);
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    private void hideItem(){
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        Menu nav_Menu = navigationView.getMenu();
+
+        SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
+        String type = prefs.getString("type", "");
+
+        if (type.equals("2")) {
+            nav_Menu.findItem(R.id.nav_release).setVisible(true);
+        }else if (type.equals("3")) {
+            nav_Menu.findItem(R.id.nav_release).setVisible(true);
+            nav_Menu.findItem(R.id.nav_delete_route).setVisible(true);
+            nav_Menu.findItem(R.id.nav_delete_user).setVisible(true);
+        }
     }
 }

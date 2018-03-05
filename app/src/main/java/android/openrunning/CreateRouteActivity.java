@@ -22,6 +22,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -47,6 +48,8 @@ import core.DBHandler;
 
 public class CreateRouteActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, MapEventsReceiver {
+
+    NavigationView navigationView;
 
     private ArrayList<GeoPoint> waypoints;
     private String geopointSeperator = ";";
@@ -138,8 +141,9 @@ public class CreateRouteActivity extends AppCompatActivity
         toggle.syncState();
 
         // navigation
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        hideItem();
 
         // checking for gps permission control
         if (ContextCompat.checkSelfPermission(this,
@@ -328,6 +332,9 @@ public class CreateRouteActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_delete_route) {
 
+            Intent myIntent = new Intent(CreateRouteActivity.this, DeleteRouteActivity.class);
+            CreateRouteActivity.this.startActivity(myIntent);
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_create_route);
@@ -369,10 +376,20 @@ public class CreateRouteActivity extends AppCompatActivity
                 });
             }
         }).start();
+    }
+    private void hideItem(){
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        Menu nav_Menu = navigationView.getMenu();
 
+        SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
+        String type = prefs.getString("type", "");
 
-
-
-
+        if (type.equals("2")) {
+            nav_Menu.findItem(R.id.nav_release).setVisible(true);
+        }else if (type.equals("3")) {
+            nav_Menu.findItem(R.id.nav_release).setVisible(true);
+            nav_Menu.findItem(R.id.nav_delete_route).setVisible(true);
+            nav_Menu.findItem(R.id.nav_delete_user).setVisible(true);
+        }
     }
 }

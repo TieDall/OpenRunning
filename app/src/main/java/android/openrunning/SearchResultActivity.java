@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -28,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
@@ -46,6 +48,9 @@ import core.Route;
 
 public class SearchResultActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    Context ctx;
+    NavigationView navigationView;
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
@@ -67,7 +72,7 @@ public class SearchResultActivity extends AppCompatActivity
         routes = new ArrayList<>();
         map= (MapView) findViewById(R.id.map);
         // for osmdroid
-        Context ctx = getApplicationContext();
+        ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
         // toolbar
@@ -82,8 +87,9 @@ public class SearchResultActivity extends AppCompatActivity
         toggle.syncState();
 
         // navigation
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        hideItem();
 
         new Thread(new Runnable() {
             @Override
@@ -244,6 +250,9 @@ public class SearchResultActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_delete_route) {
 
+            Intent myIntent = new Intent(SearchResultActivity.this, DeleteRouteActivity.class);
+            SearchResultActivity.this.startActivity(myIntent);
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -266,8 +275,32 @@ public class SearchResultActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_favorite) {
+
             return true;
         } else if (id == R.id.action_report) {
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
+                    int i = 1;
+                    String sid = prefs.getString(""+i, "");
+                    sid = "2";
+                    String result = DBHandler.setRouteStatus(sid, "2");
+                    System.out.println(result);
+
+                    System.out.println(sid);
+
+                    if (result.equals("gemeldet")) {
+                        runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(ctx, "erlogreich gemeldet", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+                    }
+            }).start();
             return true;
         }
 
@@ -316,6 +349,22 @@ public class SearchResultActivity extends AppCompatActivity
             return rootView;
         }
     }
+    
+    private void hideItem(){
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        Menu nav_Menu = navigationView.getMenu();
+
+        SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
+        String type = prefs.getString("type", "");
+
+        if (type.equals("2")) {
+            nav_Menu.findItem(R.id.nav_release).setVisible(true);
+        }else if (type.equals("3")) {
+            nav_Menu.findItem(R.id.nav_release).setVisible(true);
+            nav_Menu.findItem(R.id.nav_delete_route).setVisible(true);
+            nav_Menu.findItem(R.id.nav_delete_user).setVisible(true);
+        }
+    }
 
 
     private void roadCalc() {
@@ -355,10 +404,5 @@ public class SearchResultActivity extends AppCompatActivity
                 });
             }
         }).start();
-
-
-
-
-
     }
 }
