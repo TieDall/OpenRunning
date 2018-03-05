@@ -31,6 +31,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import org.osmdroid.api.IMapController;
+import org.osmdroid.bonuspack.routing.MapQuestRoadManager;
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
@@ -53,6 +54,8 @@ public class CreateRouteActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, MapEventsReceiver {
 
     NavigationView navigationView;
+
+    private String apiKey = "wpXplEIDvQLPHri8h8bftUopL7yvVgmW";
 
     private ArrayList<GeoPoint> waypoints;
     private String geopointSeperator = ";";
@@ -267,6 +270,9 @@ public class CreateRouteActivity extends AppCompatActivity
         map.setBuiltInZoomControls(true);
         map.setMultiTouchControls(true);
 
+        // font size
+        map.setTilesScaledToDpi(true);
+
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
         map.getOverlays().add(0, mapEventsOverlay);
 
@@ -392,7 +398,9 @@ public class CreateRouteActivity extends AppCompatActivity
 
         }
 
-        final RoadManager roadManager = new OSRMRoadManager(getApplicationContext());
+        // Make RouteManager calculating for walking
+        final RoadManager roadManager = new MapQuestRoadManager(apiKey);
+        roadManager.addRequestOption("routeType=pedestrian");
 
         new Thread(new Runnable() {
             public void run() {

@@ -23,7 +23,8 @@
         </activity>
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".CreateRouteActivity" />
+        <activity android:name=".CreateRouteActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".StartActivity"
             android:label="@string/title_activity_start"
