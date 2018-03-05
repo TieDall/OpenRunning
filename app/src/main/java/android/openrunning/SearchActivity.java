@@ -2,6 +2,9 @@ package android.openrunning;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -21,11 +24,16 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
+import org.osmdroid.bonuspack.routing.OSRMRoadManager;
+import org.osmdroid.bonuspack.routing.Road;
+import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
 
 import core.DBHandler;
+import core.Route;
 
 public class SearchActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -74,36 +82,65 @@ public class SearchActivity extends AppCompatActivity
 
                             Bundle b = new Bundle();
 
+                            // ArrayList which matches all parameters
+                            ArrayList<String> result = new ArrayList<>();
+
+                            // routes which matches the rating and length (with tolerance) only ID
+                            // @see DataHandler.getRoutes()
                             String resultRoutes = DBHandler.getRoutes(length, rating);
 
-                            String[] routesSIDs = resultRoutes.split("_");
-                            System.out.println(routesSIDs.length);
+                            // calculate distance
+                            String[] routes = resultRoutes.split("_");
+                            for (String route : routes) {
+                                // get data from route
+                                Route routeInfo = DBHandler.getRoute(Integer.parseInt(route));
 
-                            System.out.println(resultRoutes);
+                                String waypoints = routeInfo.getWaypoints();
+                                String[] waypointsAsArray = waypoints.split(";");
+                                for (String waypoint : waypointsAsArray ){
+                                    String[] waypointLatLong = waypoint.split("_");
+                                    GeoPoint geoPoint = new GeoPoint(Double.parseDouble(waypointLatLong[0]), Double.parseDouble(waypointLatLong[1]));
 
-                            for(int i=0; i<routesSIDs.length; i++){
+                                    // get current position
+                                    LocationListener locationListener = new LocationListener() {
+                                        @Override
+                                        public void onLocationChanged(Location location) {}
 
-                                b.putInt(""+i, Integer.parseInt(routesSIDs[i]));
+                                        @Override
+                                        public void onStatusChanged(String s, int i, Bundle bundle) {}
 
-                            }
+                                        @Override
+                                        public void onProviderEnabled(String s) {}
 
-/*
-                            index = resultRoutes.indexOf("_");
-                            b.putInt("1", Integer.parseInt(resultRoutes.substring(0, index)));
-                            resultRoutes = resultRoutes.substring(index+1);
+                                        @Override
+                                        public void onProviderDisabled(String s) {}
+                                    };
+                                    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                                    Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-                            if (resultRoutes.contains("_")) {
-                                index = resultRoutes.indexOf("_");
-                                b.putInt("2", Integer.parseInt(resultRoutes.substring(0, index)));
-                                resultRoutes = resultRoutes.substring(index + 1);
+                                    // calculate
+                                    ArrayList<GeoPoint> geoPoints = new ArrayList<>();
+                                    geoPoints.add(new GeoPoint(location.getLatitude(), location.getLongitude()));
+                                    geoPoints.add(geoPoint);
+                                    RoadManager roadManager = new OSRMRoadManager(getApplicationContext());
+                                    Road road = roadManager.getRoad(geoPoints);
+                                    double mLength = road.mLength;
 
-                                if (resultRoutes.contains("_")) {
-                                    index = resultRoutes.indexOf("_");
-                                    b.putInt("3", Integer.parseInt(resultRoutes.substring(0, index)));
+                                    if (Double.parseDouble(distance) >= mLength){
+                                        result.add(route);
+                                        break;
+                                    }
                                 }
-                            }
-*/
 
+                            }
+
+                            // add routes to next activity
+                            int index = 0;
+                            for (String currentResult : result){
+                                b.putInt(""+index, Integer.parseInt(resultRoutes));
+                                index++;
+                            }
                             myIntent.putExtras(b);
 
                             startActivity(myIntent);
