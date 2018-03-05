@@ -78,6 +78,8 @@ public class SearchActivity extends AppCompatActivity
                         @Override
                         public void run() {
                             Intent myIntent = new Intent(SearchActivity.this, SearchResultActivity.class);
+
+
                             Bundle b = new Bundle();
 
                             // ArrayList which matches all parameters
@@ -134,12 +136,13 @@ public class SearchActivity extends AppCompatActivity
                             }
 
                             // add routes to next activity
-                            int index = 1;
+                            int index = 0;
                             for (String currentResult : result){
-                                b.putInt("1", Integer.parseInt(resultRoutes.substring(0, index)));
+                                b.putInt(""+index, Integer.parseInt(resultRoutes));
                                 index++;
                             }
                             myIntent.putExtras(b);
+
                             startActivity(myIntent);
                             finish();
                             SearchActivity.this.startActivity(myIntent);
