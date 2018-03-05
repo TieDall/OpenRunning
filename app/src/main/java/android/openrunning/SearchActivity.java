@@ -1,7 +1,9 @@
 package android.openrunning;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -10,6 +12,7 @@ import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -38,10 +41,42 @@ import core.Route;
 public class SearchActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private Location location;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        // get current position
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                LocationListener locationListener = new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location location) {
+                    }
+
+                    @Override
+                    public void onStatusChanged(String s, int i, Bundle bundle) {
+                    }
+
+                    @Override
+                    public void onProviderEnabled(String s) {
+                    }
+
+                    @Override
+                    public void onProviderDisabled(String s) {
+                    }
+                };
+                LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                if (ActivityCompat.checkSelfPermission(SearchActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(SearchActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }
+        });
 
         // for osmdroid
         final Context ctx = getApplicationContext();
@@ -73,7 +108,7 @@ public class SearchActivity extends AppCompatActivity
                 final String length = ((EditText) findViewById(R.id.editTextRouteLength)).getText().toString();
                 final float rating = ((RatingBar) findViewById(R.id.ratingBar)).getRating();
 
-                if (!distance.isEmpty() || !length.isEmpty()){
+                if (!distance.isEmpty() || !length.isEmpty()) {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -97,27 +132,9 @@ public class SearchActivity extends AppCompatActivity
 
                                 String waypoints = routeInfo.getWaypoints();
                                 String[] waypointsAsArray = waypoints.split(";");
-                                for (String waypoint : waypointsAsArray ){
+                                for (String waypoint : waypointsAsArray) {
                                     String[] waypointLatLong = waypoint.split("_");
                                     GeoPoint geoPoint = new GeoPoint(Double.parseDouble(waypointLatLong[0]), Double.parseDouble(waypointLatLong[1]));
-
-                                    // get current position
-                                    LocationListener locationListener = new LocationListener() {
-                                        @Override
-                                        public void onLocationChanged(Location location) {}
-
-                                        @Override
-                                        public void onStatusChanged(String s, int i, Bundle bundle) {}
-
-                                        @Override
-                                        public void onProviderEnabled(String s) {}
-
-                                        @Override
-                                        public void onProviderDisabled(String s) {}
-                                    };
-                                    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-                                    Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
                                     // calculate
                                     ArrayList<GeoPoint> geoPoints = new ArrayList<>();
@@ -138,7 +155,7 @@ public class SearchActivity extends AppCompatActivity
                             // add routes to next activity
                             int index = 0;
                             for (String currentResult : result){
-                                b.putInt(""+index, Integer.parseInt(resultRoutes));
+                                b.putInt(""+index, Integer.parseInt(currentResult));
                                 index++;
                             }
                             myIntent.putExtras(b);
