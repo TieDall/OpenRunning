@@ -27,7 +27,7 @@ public class DBHandler {
 
     // Change variables below for configuration
     private static final String DB_PROTOCOL = "http";
-    private static final String DB_IP_ADDRESS = "172.31.155.179";
+    private static final String DB_IP_ADDRESS = "192.168.2.108";
 
     public static boolean addRoute(String bid, String describtion, String length, String waypoints){
 
