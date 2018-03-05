@@ -20,6 +20,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_search_result" />
+    <include layout="@layout/map" />
 
 </android.support.design.widget.CoordinatorLayout>
