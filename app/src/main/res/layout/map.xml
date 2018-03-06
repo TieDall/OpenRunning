@@ -7,18 +7,6 @@
     android:orientation="vertical"
     tools:context=".SearchResultActivity">
 
-    <TextView
-        android:id="@+id/textViewRating"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="8dp"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/textViewDescribtion"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView8" />
-
     <RatingBar
         android:id="@+id/ratingBar2"
         android:layout_width="wrap_content"
@@ -28,17 +16,6 @@
         android:minHeight="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="16dp"
-        android:text="Entfernung:"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/textView7"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textViewLength"
@@ -60,7 +37,7 @@
         android:layout_marginStart="16dp"
         android:text="Streckenlänge:"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/textView8"
+        app:layout_constraintBottom_toTopOf="@+id/textView7"
         app:layout_constraintStart_toStartOf="parent" />
 
     <org.osmdroid.views.MapView
@@ -89,7 +66,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textViewDescribtion"
+        android:id="@+id/textViewRating"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -117,10 +94,10 @@
         android:id="@+id/fab_Back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="106dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginStart="96dp"
         android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/textView10"
         app:layout_constraintStart_toStartOf="@+id/map"
         app:layout_constraintTop_toBottomOf="@+id/map"
         app:srcCompat="?android:attr/homeAsUpIndicator" />
@@ -129,8 +106,10 @@
         android:id="@+id/fab_Next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="100dp"
         android:clickable="true"
+        app:layout_constraintBottom_toTopOf="@+id/textViewLength"
         app:layout_constraintEnd_toEndOf="@+id/map"
         app:layout_constraintTop_toBottomOf="@+id/map"
         app:srcCompat="?android:attr/homeAsUpIndicator" />
