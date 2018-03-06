@@ -39,10 +39,6 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
-        //
-        UsernameEt = (EditText) findViewById(R.id.editTextUsername);
-        PasswordEt = (EditText) findViewById(R.id.editTextPassword);
-
         // adding osmdroid map
         MapView map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
@@ -76,11 +72,16 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void run() {
 
+                        // get Passwordhash from database
                         String hash = DBHandler.gethash(username);
 
+                        // checks if user exits
                         if (!hash.equals("no user")) {
+
+                            // checks if password is right
                             if (Passwordhash.checkpw(password, hash)) {
 
+                                // login to get UerID and UserType
                                 String loginReturn = DBHandler.login(username, hash);
 
                                 if (!loginReturn.equals("login not success") || loginReturn != null) {
@@ -88,6 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                                     String bid = loginReturn.substring(0, i);
                                     String type = loginReturn.substring(i + 1, loginReturn.length());
 
+                                    // set userID and userType to saved data on the device
                                     SharedPreferences.Editor editor = getSharedPreferences("openrunning", MODE_PRIVATE).edit();
                                     editor.putString("bid", bid);
                                     editor.putString("type", type);

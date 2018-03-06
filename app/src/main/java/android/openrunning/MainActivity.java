@@ -27,6 +27,7 @@ public class MainActivity extends Activity {
     boolean progressuserTypeReady = false;
     boolean userTypeReady = false;
 
+    // initialize Usertype
     String userType = "";
 
     @Override
@@ -58,14 +59,15 @@ public class MainActivity extends Activity {
                     @Override
                     public void run() {
 
+                        // get local data of userID and userType with SharedPreferences
                         SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
                         String bid = prefs.getString("bid", "");
                         String type = prefs.getString("type", "");
 
-                        //locking for changed user infos
+                        //looking for changed user infos
                         userType = DBHandler.updateuser(bid);
+
                         userTypeReady = true;
-                        System.out.println("=====> user type ready");
                     }
                 }).start();
 
@@ -75,7 +77,6 @@ public class MainActivity extends Activity {
                         Thread.sleep(100);
                         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
                         progressBar.setProgress(i);
-                        System.out.println(i);
                     }
                     progressuserTypeReady = true;
 
@@ -90,17 +91,25 @@ public class MainActivity extends Activity {
                         while (!progressuserTypeReady) { /* do nothing */}
 
                         if (userTypeReady) {
-                            System.out.println("start activity");
                             SharedPreferences.Editor editor = getSharedPreferences("openrunning", MODE_PRIVATE).edit();
+
+                            // checking if user is already logged in and if the usertype has changed
                             if (userType.equals("0") || userType.equals("1") || userType.equals("2") || userType.equals("3")) {
+                                // save the userType local on the device
                                 editor.putString("type", userType);
                                 editor.commit();
+
+                                // goes directly to the start activity
                                 Intent myIntent = new Intent(MainActivity.this, StartActivity.class);
                                 MainActivity.this.startActivity(myIntent);
                             } else {
+
+                                // if user has no login or the user was deleted, the type und bid were set to empty
                                 editor.putString("type", "");
                                 editor.putString("bid", "");
                                 editor.commit();
+
+                                // goes to the login activity
                                 Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
                                 MainActivity.this.startActivity(myIntent);
                             }
@@ -120,11 +129,7 @@ public class MainActivity extends Activity {
                         }
                     }
                 }).start();
-
             }
         }).start();
-
-
-
     }
 }

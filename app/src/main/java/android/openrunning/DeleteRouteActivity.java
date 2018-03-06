@@ -89,7 +89,10 @@ public class DeleteRouteActivity extends AppCompatActivity
             @Override
             public void run() {
 
+                // gets the Route IDs in the Database where the Status is "2"
                 String result = DBHandler.getRoutetoStatus(""+2);
+
+                // if no route with status "2" is in database
                 if (result.equals("no report Routes")){
                     runOnUiThread(new Runnable() {
                         @Override
@@ -101,12 +104,12 @@ public class DeleteRouteActivity extends AppCompatActivity
                     DeleteRouteActivity.this.startActivity(myIntent);
                 } else if (result.contains("_")) {
 
+                    // gets the first Route ID with status "2"
                     SID_result = result.substring(0, result.indexOf("_"));
-                    System.out.println(SID_result);
 
+                    // gets the complete route and adds them to routes
                     Route route = DBHandler.getRoute(Integer.parseInt(SID_result));
                     routes.add(route);
-
 
                     String[] singleWaypoints = routes.get(0).getWaypoints().toString().split(";");
                     TextView length = (TextView) findViewById(R.id.textViewLength);
@@ -114,6 +117,7 @@ public class DeleteRouteActivity extends AppCompatActivity
 
                     TextView rating = (TextView) findViewById(R.id.textViewRating);
                     rating.setText(String.valueOf(routes.get(0).getAverageVotes()));
+
 
                     for (String waypoint : singleWaypoints) {
                         splittedWaypoints = waypoint.split("_");
@@ -139,8 +143,10 @@ public class DeleteRouteActivity extends AppCompatActivity
                     @Override
                     public void run() {
 
+                        // delete the route in the database
                         String result = DBHandler.deleteRoute(SID_result);
 
+                        // checking if deleting succeed
                         if (result.equals("erfolgreich")) {
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -164,9 +170,10 @@ public class DeleteRouteActivity extends AppCompatActivity
                     @Override
                     public void run() {
 
+                        // set RouteStatus to "1"
                         String result = DBHandler.setRouteStatus(SID_result, "1");
 
-
+                        // checking if updating succeed
                         if (result.equals("erfolgreich")) {
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -339,9 +346,13 @@ public class DeleteRouteActivity extends AppCompatActivity
         }
     }
 
+    /**
+     *
+     */
     private void hideItem(){
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         Menu nav_Menu = navigationView.getMenu();
+
 
         SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
         String type = prefs.getString("type", "");
