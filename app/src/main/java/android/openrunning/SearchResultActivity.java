@@ -64,6 +64,7 @@ public class SearchResultActivity extends AppCompatActivity
     ArrayList<GeoPoint> waypoints = new ArrayList<>();
 
     private int in =1;
+    int index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +134,7 @@ public class SearchResultActivity extends AppCompatActivity
         fab_Next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                int index = in;
+                index = in;
 
                 String[] singleWaypoints = routes.get(index).getWaypoints().toString().split(";");
 
@@ -169,7 +170,7 @@ public class SearchResultActivity extends AppCompatActivity
                     in--;
                 }
 
-                int index = in;
+                index = in;
 
                 String[] singleWaypoints = routes.get(index).getWaypoints().toString().split(";");
 
@@ -282,16 +283,12 @@ public class SearchResultActivity extends AppCompatActivity
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
-                    int i = 1;
-                    String sid = prefs.getString(""+i, "");
-                    sid = "2";
-                    String result = DBHandler.setRouteStatus(sid, "2");
-                    System.out.println(result);
 
-                    System.out.println(sid);
+                    int sid = routes.get(index).getId();
 
-                    if (result.equals("gemeldet")) {
+                    String result = DBHandler.setRouteStatus(""+sid, ""+2);
+
+                    if (result.equals("erfolgreich")) {
                         runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

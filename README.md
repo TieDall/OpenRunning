@@ -287,6 +287,28 @@ deleteRoute.php
  ?>
 ``` 
 
+getRoutetoStatus.php
+```
+<?php
+	require "conn.php";
+
+	$status = $_POST["status"];
+
+	$mysql_qry = "select SID from strecken where Streckenstatus like '$status';";
+
+	$result = mysqli_query ($conn ,$mysql_qry);
+
+	if (mysqli_num_rows($result) > 0){
+		while($row = $result->fetch_assoc()) {
+			echo $row["SID"]. "_";
+		}
+	}
+	else {
+	  echo "no report Routes";
+	}
+ ?>
+ ```
+
 ### Anpassung DBHandler.java
 In der Klasse "DBHandler.java" ist der String "DB_IP_ADDRESS" zu ersetzen mit der IP der Datenbank und ggf. "DB_PROTOCOL".
 ```

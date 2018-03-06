@@ -2,7 +2,10 @@ package android.openrunning;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -96,9 +99,47 @@ public class CreateRouteActivity extends AppCompatActivity
 
                         boolean successfull = DBHandler.addRoute(bid, "", ""+length, waypointsAsString);
                         if (successfull){
-                            System.out.println("yes");
+
+                            // Alert Dialog for successfull adding new route
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(CreateRouteActivity.this);
+                                    builder.setMessage("Danke, dass du deine Strecke mit der Community teilst. ")
+                                            .setCancelable(false)
+                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    finish();
+                                                }
+                                            });
+                                    AlertDialog alert = builder.create();
+                                    alert.setTitle("Erfolgreich erstellt!");
+                                    alert.show();
+                                }
+                            });
+
                         } else {
-                            System.out.println("no");
+
+                            // Alert Dialog for failure adding new route
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(CreateRouteActivity.this);
+                                    builder.setMessage("Bitte versuche es später noch einmal.")
+                                            .setCancelable(false)
+                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    finish();
+                                                }
+                                            });
+                                    AlertDialog alert = builder.create();
+                                    alert.setTitle("Es gab ein Fehler!");
+                                    alert.show();
+                                }
+                            });
+
                         }
                     }
                 }).start();
@@ -342,7 +383,6 @@ public class CreateRouteActivity extends AppCompatActivity
         return true;
     }
 
-
     private void roadCalc() {
 
         if (map.getOverlays().contains(roadOverlay)){
@@ -377,6 +417,7 @@ public class CreateRouteActivity extends AppCompatActivity
             }
         }).start();
     }
+
     private void hideItem(){
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         Menu nav_Menu = navigationView.getMenu();
