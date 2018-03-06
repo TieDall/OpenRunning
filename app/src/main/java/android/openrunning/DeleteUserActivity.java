@@ -162,6 +162,16 @@ public class DeleteUserActivity extends AppCompatActivity
             DeleteUserActivity.this.startActivity(myIntent);
 
 
+        } else if (id == R.id.nav_logout_user) {
+
+            SharedPreferences.Editor editor = getSharedPreferences("openrunning", MODE_PRIVATE).edit();
+            editor.putString("bid", "");
+            editor.putString("type", "");
+            editor.commit();
+
+            Intent myIntent = new Intent(DeleteUserActivity.this, LoginActivity.class);
+            DeleteUserActivity.this.startActivity(myIntent);
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

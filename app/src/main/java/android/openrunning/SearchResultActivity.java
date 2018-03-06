@@ -269,6 +269,16 @@ public class SearchResultActivity extends AppCompatActivity
             Intent myIntent = new Intent(SearchResultActivity.this, DeleteRouteActivity.class);
             SearchResultActivity.this.startActivity(myIntent);
 
+        } else if (id == R.id.nav_logout_user) {
+
+            SharedPreferences.Editor editor = getSharedPreferences("openrunning", MODE_PRIVATE).edit();
+            editor.putString("bid", "");
+            editor.putString("type", "");
+            editor.commit();
+
+            Intent myIntent = new Intent(SearchResultActivity.this, LoginActivity.class);
+            SearchResultActivity.this.startActivity(myIntent);
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

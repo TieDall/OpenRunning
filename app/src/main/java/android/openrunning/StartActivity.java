@@ -234,6 +234,16 @@ public class StartActivity extends AppCompatActivity
             Intent myIntent = new Intent(StartActivity.this, DeleteRouteActivity.class);
             StartActivity.this.startActivity(myIntent);
 
+        } else if (id == R.id.nav_logout_user) {
+
+            SharedPreferences.Editor editor = getSharedPreferences("openrunning", MODE_PRIVATE).edit();
+            editor.putString("bid", "");
+            editor.putString("type", "");
+            editor.commit();
+
+            Intent myIntent = new Intent(StartActivity.this, LoginActivity.class);
+            StartActivity.this.startActivity(myIntent);
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

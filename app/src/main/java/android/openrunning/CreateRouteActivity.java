@@ -382,6 +382,16 @@ public class CreateRouteActivity extends AppCompatActivity
             Intent myIntent = new Intent(CreateRouteActivity.this, DeleteRouteActivity.class);
             CreateRouteActivity.this.startActivity(myIntent);
 
+        } else if (id == R.id.nav_logout_user) {
+
+            SharedPreferences.Editor editor = getSharedPreferences("openrunning", MODE_PRIVATE).edit();
+            editor.putString("bid", "");
+            editor.putString("type", "");
+            editor.commit();
+
+            Intent myIntent = new Intent(CreateRouteActivity.this, LoginActivity.class);
+            CreateRouteActivity.this.startActivity(myIntent);
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_create_route);
