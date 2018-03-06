@@ -1,7 +1,9 @@
 package android.openrunning;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -84,20 +86,37 @@ public class MainActivity extends Activity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        while (!progressuserTypeReady && !userTypeReady) { /* do nothing */}
-                        System.out.println("start activity");
-                        SharedPreferences.Editor editor = getSharedPreferences("openrunning", MODE_PRIVATE).edit();
-                        if (userType.equals("0") || userType.equals("1") || userType.equals("2") || userType.equals("3")){
-                            editor.putString("type", userType);
-                            editor.commit();
-                            Intent myIntent = new Intent(MainActivity.this, StartActivity.class);
-                            MainActivity.this.startActivity(myIntent);
+                        // wait until loading is completed
+                        while (!progressuserTypeReady) { /* do nothing */}
+
+                        if (userTypeReady) {
+                            System.out.println("start activity");
+                            SharedPreferences.Editor editor = getSharedPreferences("openrunning", MODE_PRIVATE).edit();
+                            if (userType.equals("0") || userType.equals("1") || userType.equals("2") || userType.equals("3")) {
+                                editor.putString("type", userType);
+                                editor.commit();
+                                Intent myIntent = new Intent(MainActivity.this, StartActivity.class);
+                                MainActivity.this.startActivity(myIntent);
+                            } else {
+                                editor.putString("type", "");
+                                editor.putString("bid", "");
+                                editor.commit();
+                                Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
+                                MainActivity.this.startActivity(myIntent);
+                            }
                         } else {
-                            editor.putString("type", "");
-                            editor.putString("bid", "");
-                            editor.commit();
-                            Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
-                            MainActivity.this.startActivity(myIntent);
+                            // Alert Dialog when no connection to server
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                    builder.setMessage("Bitte versuche es später erneut.")
+                                            .setCancelable(false);
+                                    AlertDialog alert = builder.create();
+                                    alert.setTitle("Verbindung zum Server nicht möglich!");
+                                    alert.show();
+                                }
+                            });
                         }
                     }
                 }).start();
