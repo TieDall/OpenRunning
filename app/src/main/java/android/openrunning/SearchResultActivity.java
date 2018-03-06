@@ -1,21 +1,15 @@
 package android.openrunning;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -27,7 +21,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +29,6 @@ import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.config.Configuration;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Polyline;
@@ -52,12 +44,8 @@ public class SearchResultActivity extends AppCompatActivity
     Context ctx;
     NavigationView navigationView;
 
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-    private ViewPager mViewPager;
-
     static ArrayList<Route> routes;
     private String[] splittedWaypoints;
-    private String[] splittedWaypointsLL;
 
     private MapView map;
     private Polyline roadOverlay;
@@ -81,6 +69,7 @@ public class SearchResultActivity extends AppCompatActivity
         toolbar.setTitle("Streckenergebnisse");
         setSupportActionBar(toolbar);
 
+        // drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -95,6 +84,8 @@ public class SearchResultActivity extends AppCompatActivity
         new Thread(new Runnable() {
             @Override
             public void run() {
+
+                //adding given routes to array
                 Bundle b = getIntent().getExtras();
 
                 int i = 0;
@@ -106,13 +97,19 @@ public class SearchResultActivity extends AppCompatActivity
                     i++;
                 }
 
+                //displaying the first route
+                //singleWaypoints gives array with single waypoints
+                // --> waypoints are in form longitude_latitude
                 String[] singleWaypoints = routes.get(0).getWaypoints().toString().split(";");
+
+                //setting text of TextViews
                 TextView length = (TextView) findViewById(R.id.textViewLength);
                 length.setText(String.valueOf(routes.get(0).getLength()));
 
                 TextView rating = (TextView) findViewById(R.id.textViewRating);
                 rating.setText(String.valueOf(routes.get(0).getAverageVotes()));
 
+                //creating GeoPoints from singleWaypoints array by splitting each waypoint
                 for(String waypoint : singleWaypoints){
                     splittedWaypoints=waypoint.split("_");
                     Double latidude = Double.parseDouble(splittedWaypoints[0]);
@@ -120,21 +117,28 @@ public class SearchResultActivity extends AppCompatActivity
                     GeoPoint p = new GeoPoint(latidude, longitude);
                     waypoints.add(p);
 
-
                 }
 
                 roadCalc();
 
-
             }
         }).start();
 
-
+        //FloatingActionButton to display next route
         FloatingActionButton fab_Next = (FloatingActionButton) findViewById(R.id.fab_Next);
         fab_Next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                index = in;
+                //checking wether there are only one route as search result or more
+                if(routes.size() == 1){
+
+                    index=0;
+
+                }else{
+
+                    index = in;
+
+                }
 
                 String[] singleWaypoints = routes.get(index).getWaypoints().toString().split(";");
 
@@ -154,6 +158,8 @@ public class SearchResultActivity extends AppCompatActivity
 
                 roadCalc();
 
+                //preventing index out of range error
+                //--> if last route is shown and actionbutton is pressed again, first route will be shown
                 if(in == routes.size()-1) {
                     in = 0;
 
@@ -170,7 +176,15 @@ public class SearchResultActivity extends AppCompatActivity
                     in--;
                 }
 
-                index = in;
+                if(routes.size()==1){
+
+                    index=0;
+
+                }else{
+
+                    index = in;
+
+                }
 
                 String[] singleWaypoints = routes.get(index).getWaypoints().toString().split(";");
 
@@ -190,6 +204,8 @@ public class SearchResultActivity extends AppCompatActivity
 
                 roadCalc();
 
+                //preventing index out of range error
+                //--> if first route is shown and actionbutton is pressed again, first route will be shown
                 if(in == routes.size()-1) {
                     in = 0;
 
@@ -198,7 +214,6 @@ public class SearchResultActivity extends AppCompatActivity
         });
 
     }
-
 
 
     /**
@@ -382,7 +397,6 @@ public class SearchResultActivity extends AppCompatActivity
                 bufferwaypoints.add(waypoints.get(0));
 
                 Road road = roadManager.getRoad(bufferwaypoints);
-                //length = road.mLength;
 
                 roadOverlay = RoadManager.buildRoadOverlay(road);
                 map.getOverlays().add(roadOverlay);
@@ -392,8 +406,10 @@ public class SearchResultActivity extends AppCompatActivity
                     public void run() {
 
                         final IMapController mapController = map.getController();
-                        mapController.setZoom(12);
+                        mapController.setZoom(14);
                         mapController.setCenter(waypoints.get(0));
+                        map.setBuiltInZoomControls(true);
+                        map.setMultiTouchControls(true);
                         map.invalidate();
                         waypoints.clear();
 

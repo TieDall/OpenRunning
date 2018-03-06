@@ -54,7 +54,7 @@ public class StartActivity extends AppCompatActivity
         toolbar.setTitle("Start");
         setSupportActionBar(toolbar);
 
-        // update postion button
+        // update position button
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_position);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,8 +179,10 @@ public class StartActivity extends AppCompatActivity
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == StartActivity.accessFineLocCode){
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
             this.displayMap();
+        } else {
+
         }
     }
 
@@ -239,6 +241,22 @@ public class StartActivity extends AppCompatActivity
         return true;
     }
 
+    private void hideItem(){
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        Menu nav_Menu = navigationView.getMenu();
+
+        SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
+        String type = prefs.getString("type", "");
+
+        if (type.equals("2")) {
+            nav_Menu.findItem(R.id.nav_release).setVisible(true);
+        }else if (type.equals("3")) {
+            nav_Menu.findItem(R.id.nav_release).setVisible(true);
+            nav_Menu.findItem(R.id.nav_delete_route).setVisible(true);
+            nav_Menu.findItem(R.id.nav_delete_user).setVisible(true);
+        }
+    }
+
     /*
         Actions on toolbar.
      */
@@ -265,19 +283,5 @@ public class StartActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-    private void hideItem(){
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        Menu nav_Menu = navigationView.getMenu();
 
-        SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
-        String type = prefs.getString("type", "");
-
-        if (type.equals("2")) {
-            nav_Menu.findItem(R.id.nav_release).setVisible(true);
-        }else if (type.equals("3")) {
-        nav_Menu.findItem(R.id.nav_release).setVisible(true);
-        nav_Menu.findItem(R.id.nav_delete_route).setVisible(true);
-        nav_Menu.findItem(R.id.nav_delete_user).setVisible(true);
-        }
-    }
 }

@@ -22,6 +22,11 @@ import core.DBHandler;
 
 public class MainActivity extends Activity {
 
+    boolean progressuserTypeReady = false;
+    boolean userTypeReady = false;
+
+    String userType = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,9 +37,6 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
-        // hide ActionBar
-        // getActionBar().hide();
-
         // adding osmdroid map
         MapView map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
@@ -44,40 +46,66 @@ public class MainActivity extends Activity {
         GeoPoint startPoint = new GeoPoint(51.341236, 12.374643);
         mapController.setCenter(startPoint);
 
-        // Sleeper
+        // proceed functions
         new Thread(new Runnable() {
             @Override
             public void run() {
+
+                // checking userType
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
+                        String bid = prefs.getString("bid", "");
+                        String type = prefs.getString("type", "");
+
+                        //locking for changed user infos
+                        userType = DBHandler.updateuser(bid);
+                        userTypeReady = true;
+                        System.out.println("=====> user type ready");
+                    }
+                }).start();
+
+                // progressBar
                 try {
-                    for (int i = 0; i<50; i++) {
+                    for (int i = 0; i < 50; i++) {
                         Thread.sleep(100);
                         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
                         progressBar.setProgress(i);
+                        System.out.println(i);
                     }
+                    progressuserTypeReady = true;
 
-                    SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
-                    String bid = prefs.getString("bid", "");
-                    String type = prefs.getString("type", "");
+                } catch (InterruptedException e) {
+                }
 
-                    SharedPreferences.Editor editor = getSharedPreferences("openrunning", MODE_PRIVATE).edit();
-
-                    //locking for changed user infos
-                    String result = DBHandler.updateuser(bid);
-
-                    if (result.equals("0") || result.equals("1") || result.equals("2") || result.equals("3")){
-                        editor.putString("type", result);
-                        editor.commit();
-                        Intent myIntent = new Intent(MainActivity.this, StartActivity.class);
-                        MainActivity.this.startActivity(myIntent);
-                    } else {
-                        editor.putString("type", "");
-                        editor.putString("bid", "");
-                        editor.commit();
-                        Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
-                        MainActivity.this.startActivity(myIntent);
+                // open next activity
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (!progressuserTypeReady && !userTypeReady) { /* do nothing */}
+                        System.out.println("start activity");
+                        SharedPreferences.Editor editor = getSharedPreferences("openrunning", MODE_PRIVATE).edit();
+                        if (userType.equals("0") || userType.equals("1") || userType.equals("2") || userType.equals("3")){
+                            editor.putString("type", userType);
+                            editor.commit();
+                            Intent myIntent = new Intent(MainActivity.this, StartActivity.class);
+                            MainActivity.this.startActivity(myIntent);
+                        } else {
+                            editor.putString("type", "");
+                            editor.putString("bid", "");
+                            editor.commit();
+                            Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
+                            MainActivity.this.startActivity(myIntent);
+                        }
                     }
-                } catch (InterruptedException e) {}
+                }).start();
+
             }
         }).start();
+
+
+
     }
 }
