@@ -96,7 +96,8 @@
         android:src="@drawable/ic_chevron_left"
         app:layout_constraintBottom_toTopOf="@+id/textView10"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="?android:attr/homeAsUpIndicator" />
+        app:srcCompat="?android:attr/homeAsUpIndicator"
+        android:layout_marginLeft="55dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_Next"
