@@ -100,7 +100,8 @@
         app:layout_constraintBottom_toTopOf="@+id/textView10"
         app:layout_constraintStart_toStartOf="@+id/map"
         app:layout_constraintTop_toBottomOf="@+id/map"
-        app:srcCompat="?android:attr/homeAsUpIndicator" />
+        app:srcCompat="?android:attr/homeAsUpIndicator"
+        android:src="@drawable/ic_chevron_left"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_Next"
@@ -112,6 +113,7 @@
         app:layout_constraintBottom_toTopOf="@+id/textViewLength"
         app:layout_constraintEnd_toEndOf="@+id/map"
         app:layout_constraintTop_toBottomOf="@+id/map"
-        app:srcCompat="?android:attr/homeAsUpIndicator" />
+        app:srcCompat="?android:attr/homeAsUpIndicator"
+        android:src="@drawable/ic_chevron_right"/>
 
 </android.support.constraint.ConstraintLayout>

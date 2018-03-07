@@ -127,6 +127,10 @@ public class SearchActivity extends AppCompatActivity
                             // @see DataHandler.getRoutes()
                             String resultRoutes = DBHandler.getRoutes(length, rating);
 
+                            //checking if the search returns routes
+                            //if none is found, getRoutes will return "error"
+                            if(!resultRoutes.equals("error")){
+
                             // calculate distance
                             String[] routes = resultRoutes.split("_");
                             for (String route : routes) {
@@ -155,17 +159,30 @@ public class SearchActivity extends AppCompatActivity
 
                             }
 
-                            // add routes to next activity
-                            int index = 0;
-                            for (String currentResult : result){
-                                b.putInt(""+index, Integer.parseInt(currentResult));
-                                index++;
-                            }
-                            myIntent.putExtras(b);
+                                // add routes to next activity
+                                int index = 0;
+                                for (String currentResult : result){
+                                    b.putInt(""+index, Integer.parseInt(currentResult));
+                                    index++;
+                                }
+                                myIntent.putExtras(b);
 
-                            startActivity(myIntent);
-                            finish();
-                            SearchActivity.this.startActivity(myIntent);
+                                startActivity(myIntent);
+                                finish();
+                                SearchActivity.this.startActivity(myIntent);
+
+                        }
+
+                        else{
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(ctx, "Suche lieferte keine Treffer!", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                            }
+
+
                         }
                     }).start();
                 } else {
@@ -173,7 +190,7 @@ public class SearchActivity extends AppCompatActivity
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(ctx, "Suche ungültig", Toast.LENGTH_LONG).show();
+                            Toast.makeText(ctx, "Suche nicht erfolgreich", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
