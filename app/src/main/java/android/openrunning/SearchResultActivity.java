@@ -33,6 +33,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Polyline;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import core.DBHandler;
@@ -104,7 +105,10 @@ public class SearchResultActivity extends AppCompatActivity
 
                 //setting text of TextViews
                 TextView length = (TextView) findViewById(R.id.textViewLength);
-                length.setText(String.valueOf(routes.get(0).getLength()));
+                double l = routes.get(0).getLength();
+                DecimalFormat df = new DecimalFormat("##.##");
+                l = Double.parseDouble(df.format(l));
+                length.setText(l+" km");
 
                 TextView rating = (TextView) findViewById(R.id.textViewRating);
                 rating.setText(String.valueOf(routes.get(0).getAverageVotes()));
@@ -143,7 +147,10 @@ public class SearchResultActivity extends AppCompatActivity
                 String[] singleWaypoints = routes.get(index).getWaypoints().toString().split(";");
 
                 TextView length = (TextView) findViewById(R.id.textViewLength);
-                length.setText(String.valueOf(routes.get(index).getLength()));
+                double l = routes.get(index).getLength();
+                DecimalFormat df = new DecimalFormat("##.##");
+                l = Double.parseDouble(df.format(l));
+                length.setText(l+" km");
 
                 TextView rating = (TextView) findViewById(R.id.textViewRating);
                 rating.setText(String.valueOf(routes.get(index).getAverageVotes()));
@@ -189,7 +196,10 @@ public class SearchResultActivity extends AppCompatActivity
                 String[] singleWaypoints = routes.get(index).getWaypoints().toString().split(";");
 
                 TextView length = (TextView) findViewById(R.id.textViewLength);
-                length.setText(String.valueOf(routes.get(index).getLength()));
+                double l = routes.get(index).getLength();
+                DecimalFormat df = new DecimalFormat("##.##");
+                l = Double.parseDouble(df.format(l));
+                length.setText(l+" km");
 
                 TextView rating = (TextView) findViewById(R.id.textViewRating);
                 rating.setText(String.valueOf(routes.get(index).getAverageVotes()));

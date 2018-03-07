@@ -33,6 +33,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Polyline;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import core.DBHandler;
@@ -113,7 +114,10 @@ public class DeleteRouteActivity extends AppCompatActivity
 
                     String[] singleWaypoints = routes.get(0).getWaypoints().toString().split(";");
                     TextView length = (TextView) findViewById(R.id.textViewLength);
-                    length.setText(String.valueOf(routes.get(0).getLength()));
+                    double l = routes.get(0).getLength();
+                    DecimalFormat df = new DecimalFormat("##.##");
+                    l = Double.parseDouble(df.format(l));
+                    length.setText(l+" km");
 
                     TextView rating = (TextView) findViewById(R.id.textViewRating);
                     rating.setText(String.valueOf(routes.get(0).getAverageVotes()));
