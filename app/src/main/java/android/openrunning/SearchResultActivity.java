@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.osmdroid.api.IMapController;
+import org.osmdroid.bonuspack.routing.MapQuestRoadManager;
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
@@ -45,6 +46,8 @@ public class SearchResultActivity extends AppCompatActivity
     Context ctx;
     NavigationView navigationView;
 
+    private String apiKey = "wpXplEIDvQLPHri8h8bftUopL7yvVgmW";
+
     static ArrayList<Route> routes;
     private String[] splittedWaypoints;
 
@@ -61,6 +64,10 @@ public class SearchResultActivity extends AppCompatActivity
         setContentView(R.layout.activity_search_result);
         routes = new ArrayList<>();
         map= (MapView) findViewById(R.id.map);
+
+        // font size map
+        map.setTilesScaledToDpi(true);
+
         // for osmdroid
         ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
@@ -417,7 +424,9 @@ public class SearchResultActivity extends AppCompatActivity
 
         }
 
-        final RoadManager roadManager = new OSRMRoadManager(getApplicationContext());
+        // Make RouteManager calculating for walking
+        final RoadManager roadManager = new MapQuestRoadManager(apiKey);
+        roadManager.addRequestOption("routeType=pedestrian");
 
         new Thread(new Runnable() {
             public void run() {

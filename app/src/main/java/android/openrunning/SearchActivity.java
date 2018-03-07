@@ -28,6 +28,7 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
+import org.osmdroid.bonuspack.routing.MapQuestRoadManager;
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
@@ -44,6 +45,8 @@ public class SearchActivity extends AppCompatActivity
 
     NavigationView navigationView;
     private Location location;
+
+    private String apiKey = "wpXplEIDvQLPHri8h8bftUopL7yvVgmW";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,7 +150,11 @@ public class SearchActivity extends AppCompatActivity
                                     ArrayList<GeoPoint> geoPoints = new ArrayList<>();
                                     geoPoints.add(new GeoPoint(location.getLatitude(), location.getLongitude()));
                                     geoPoints.add(geoPoint);
-                                    RoadManager roadManager = new OSRMRoadManager(getApplicationContext());
+
+                                    // Make RouteManager calculating for walking
+                                    final RoadManager roadManager = new MapQuestRoadManager(apiKey);
+                                    roadManager.addRequestOption("routeType=pedestrian");
+
                                     Road road = roadManager.getRoad(geoPoints);
                                     double mLength = road.mLength;
 

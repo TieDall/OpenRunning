@@ -27,7 +27,7 @@ public class DBHandler {
 
     // Change variables below for configuration
     private static final String DB_PROTOCOL = "http";
-    private static final String DB_IP_ADDRESS = "172.31.155.179";
+    private static final String DB_IP_ADDRESS = "192.168.178.27";
 
     /**
      * adds a new Route to the database with bis, describtion, length and the waypoints
