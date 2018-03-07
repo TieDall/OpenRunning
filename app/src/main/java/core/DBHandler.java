@@ -29,6 +29,14 @@ public class DBHandler {
     private static final String DB_PROTOCOL = "http";
     private static final String DB_IP_ADDRESS = "172.31.155.179";
 
+    /**
+     * adds a new Route to the database with bis, describtion, length and the waypoints
+     * @param bid
+     * @param describtion
+     * @param length
+     * @param waypoints
+     * @return String with "New record created successfully" or an error
+     */
     public static boolean addRoute(String bid, String describtion, String length, String waypoints){
 
         String add_route_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/route_add.php";
@@ -86,6 +94,12 @@ public class DBHandler {
         return false;
     }
 
+    /**
+     * checks username an password
+     * @param username
+     * @param password
+     * @return String with BID  and Benutzertyp separated by "_" or an error
+     */
     public static String login(String username, String password){
 
         String login_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/login.php";
@@ -129,16 +143,22 @@ public class DBHandler {
         return null;
     }
 
+    /**
+     * Gets SIDs from database where length and rating fits
+     * @param length
+     * @param rating
+     * @return String with SIDs separated by "_" or an error
+     */
     public static String getRoutes(String length, float rating) {
 
-        String login_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/getRoutes.php";
+        String getRoutes_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/getRoutes.php";
         double tolerance = 0.5;
         double length_min = Double.valueOf(length)-(Double.valueOf(length)*tolerance);
         double length_max = Double.valueOf(length)+(Double.valueOf(length)*tolerance);
 
         try {
 
-            URL url = new URL(login_url);
+            URL url = new URL(getRoutes_url);
             HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setDoOutput(true);
@@ -174,6 +194,11 @@ public class DBHandler {
         return null;
     }
 
+    /**
+     * gets a Route from database with this SID
+     * @param sid
+     * @return Route
+     */
     public static Route getRoute(int sid){
         int bid = 0;
         String description = null;
@@ -182,11 +207,11 @@ public class DBHandler {
         double averageVotes = 0;
         String waypoints = null;
 
-        String login_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/route_info.php";
+        String getRoute_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/route_info.php";
 
         try {
 
-            URL url = new URL(login_url);
+            URL url = new URL(getRoute_url);
             HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setDoOutput(true);
@@ -258,6 +283,13 @@ public class DBHandler {
 
     }
 
+    /**
+     * adds the new user to database with username, mailadresse and hash
+     * @param username
+     * @param mailadresse
+     * @param hash
+     * @return "Insert successfull" or an error
+     */
     public static String register(String username, String mailadresse, String hash) {
         String register_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/register.php";
 
@@ -309,12 +341,17 @@ public class DBHandler {
         return null;
     }
 
+    /**
+     * gets the passwordhash to the username
+     * @param username
+     * @return String with Passworthash or "no user"
+     */
     public static String gethash(String username) {
-        String login_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/getHash.php";
+        String gethash_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/getHash.php";
 
         try {
 
-            URL url = new URL(login_url);
+            URL url = new URL(gethash_url);
             HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setDoOutput(true);
@@ -350,12 +387,18 @@ public class DBHandler {
         return null;
     }
 
+    /**
+     * checks if username or mailaddress already exist in database
+     * @param username
+     * @param mailadresse
+     * @return String with Benutzername or ""
+     */
     public static String getUser_info(String username, String mailadresse) {
-        String login_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/getUser_info.php";
+        String getUser_info_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/getUser_info.php";
 
         try {
 
-            URL url = new URL(login_url);
+            URL url = new URL(getUser_info_url);
             HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setDoOutput(true);
@@ -392,12 +435,17 @@ public class DBHandler {
         return null;
     }
 
+    /**
+     * deletes user from database with username
+     * @param user
+     * @return String Benutzername or "not found"
+     */
     public static String removeUser(String user) {
-        String login_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/removeUser.php";
+        String removeUser_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/removeUser.php";
 
         try {
 
-            URL url = new URL(login_url);
+            URL url = new URL(removeUser_url);
             HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setDoOutput(true);
@@ -431,12 +479,17 @@ public class DBHandler {
         return "Error";
     }
 
+    /**
+     * gets userType from database to the bid
+     * @param bid
+     * @return String with Benutzertyp or "not found"
+     */
     public static String updateuser(String bid) {
-        String login_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/getUser_update.php";
+        String updateuser_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/getUser_update.php";
 
         try {
 
-            URL url = new URL(login_url);
+            URL url = new URL(updateuser_url);
             HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setDoOutput(true);
@@ -470,13 +523,19 @@ public class DBHandler {
         return "Error";
     }
 
+    /**
+     * sets the Streckenstatus in the route with this SID in the database to status
+     * @param sid
+     * @param status
+     * @return String with "erfolgreich" or "failure"
+     */
     public static String setRouteStatus(String sid, String status) {
 
-        String login_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/setRouteStatus.php";
+        String setRouteStatus_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/setRouteStatus.php";
 
         try {
 
-            URL url = new URL(login_url);
+            URL url = new URL(setRouteStatus_url);
             HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setDoOutput(true);
@@ -513,12 +572,17 @@ public class DBHandler {
 
     }
 
+    /**
+     * delete the Route with this SID from database
+     * @param sid
+     * @return String with "erfolgreich" or "error"
+     */
     public static String deleteRoute(String sid) {
-        String login_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/deleteRoute.php";
+        String deleteRoute_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/deleteRoute.php";
 
         try {
 
-            URL url = new URL(login_url);
+            URL url = new URL(deleteRoute_url);
             HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setDoOutput(true);
@@ -552,12 +616,17 @@ public class DBHandler {
         return "Error";
     }
 
+    /**
+     * gets SIDs with this Streckenstatus
+     * @param status
+     * @return String with all SIDs separated by "_"
+     */
     public static String getRoutetoStatus(String status) {
-        String login_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/getRoutetoStatus.php";
+        String getRoutetoStatus_url = DB_PROTOCOL+"://"+DB_IP_ADDRESS+"/getRoutetoStatus.php";
 
         try {
 
-            URL url = new URL(login_url);
+            URL url = new URL(getRoutetoStatus_url);
             HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setDoOutput(true);

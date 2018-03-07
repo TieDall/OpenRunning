@@ -33,6 +33,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Polyline;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import core.DBHandler;
@@ -62,7 +63,7 @@ public class DeleteRouteActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_result);
+        setContentView(R.layout.activity_delete_route);
         routes = new ArrayList<>();
         map= (MapView) findViewById(R.id.map);
         // for osmdroid
@@ -71,7 +72,7 @@ public class DeleteRouteActivity extends AppCompatActivity
 
         // toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("gemeldete Strecken:");
+        toolbar.setTitle("gemeldete Strecken löschen?");
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -89,7 +90,10 @@ public class DeleteRouteActivity extends AppCompatActivity
             @Override
             public void run() {
 
+                // gets the Route IDs in the Database where the Status is "2"
                 String result = DBHandler.getRoutetoStatus(""+2);
+
+                // if no route with status "2" is in database
                 if (result.equals("no report Routes")){
                     runOnUiThread(new Runnable() {
                         @Override
@@ -101,19 +105,23 @@ public class DeleteRouteActivity extends AppCompatActivity
                     DeleteRouteActivity.this.startActivity(myIntent);
                 } else if (result.contains("_")) {
 
+                    // gets the first Route ID with status "2"
                     SID_result = result.substring(0, result.indexOf("_"));
-                    System.out.println(SID_result);
 
+                    // gets the complete route and adds them to routes
                     Route route = DBHandler.getRoute(Integer.parseInt(SID_result));
                     routes.add(route);
 
-
                     String[] singleWaypoints = routes.get(0).getWaypoints().toString().split(";");
                     TextView length = (TextView) findViewById(R.id.textViewLength);
-                    length.setText(String.valueOf(routes.get(0).getLength()));
+                    double l = routes.get(0).getLength();
+                    DecimalFormat df = new DecimalFormat("##.##");
+                    l = Double.parseDouble(df.format(l));
+                    length.setText(l+" km");
 
                     TextView rating = (TextView) findViewById(R.id.textViewRating);
                     rating.setText(String.valueOf(routes.get(0).getAverageVotes()));
+
 
                     for (String waypoint : singleWaypoints) {
                         splittedWaypoints = waypoint.split("_");
@@ -131,16 +139,18 @@ public class DeleteRouteActivity extends AppCompatActivity
         }).start();
 
 
-        FloatingActionButton fab_Next = (FloatingActionButton) findViewById(R.id.fab_Next);
-        fab_Next.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab_delete = (FloatingActionButton) findViewById(R.id.fab_delete);
+        fab_delete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
 
+                        // delete the route in the database
                         String result = DBHandler.deleteRoute(SID_result);
 
+                        // checking if deleting succeed
                         if (result.equals("erfolgreich")) {
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -156,17 +166,18 @@ public class DeleteRouteActivity extends AppCompatActivity
             }
         });
 
-        FloatingActionButton fab_Back = (FloatingActionButton) findViewById(R.id.fab_Back);
-        fab_Back.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab_hold = (FloatingActionButton) findViewById(R.id.fab_hold);
+        fab_hold.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
 
+                        // set RouteStatus to "1"
                         String result = DBHandler.setRouteStatus(SID_result, "1");
 
-
+                        // checking if updating succeed
                         if (result.equals("erfolgreich")) {
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -236,6 +247,16 @@ public class DeleteRouteActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_delete_route) {
 
+        } else if (id == R.id.nav_logout_user) {
+
+            SharedPreferences.Editor editor = getSharedPreferences("openrunning", MODE_PRIVATE).edit();
+            editor.putString("bid", "");
+            editor.putString("type", "");
+            editor.commit();
+
+            Intent myIntent = new Intent(DeleteRouteActivity.this, LoginActivity.class);
+            DeleteRouteActivity.this.startActivity(myIntent);
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -249,7 +270,6 @@ public class DeleteRouteActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.actions_search_result, menu);
         return true;
     }
 
@@ -329,9 +349,13 @@ public class DeleteRouteActivity extends AppCompatActivity
         }
     }
 
+    /**
+     *
+     */
     private void hideItem(){
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         Menu nav_Menu = navigationView.getMenu();
+
 
         SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
         String type = prefs.getString("type", "");
@@ -374,7 +398,7 @@ public class DeleteRouteActivity extends AppCompatActivity
                     public void run() {
 
                         final IMapController mapController = map.getController();
-                        mapController.setZoom(12);
+                        mapController.setZoom(14);
                         mapController.setCenter(waypoints.get(0));
                         map.invalidate();
                         waypoints.clear();

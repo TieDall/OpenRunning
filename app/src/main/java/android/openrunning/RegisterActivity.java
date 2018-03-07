@@ -70,24 +70,33 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void run() {
 
+                        // checks if no field is empty
                         if (!username.isEmpty() && !mailadresse.isEmpty() && !password.isEmpty() && !password2.isEmpty() ) {
 
+                            // checks if both passwords are equal
                             if (password.equals(password2)){
 
+                                // checks if username or mailaddress already exist
                                 if (DBHandler.getUser_info(username, mailadresse).equals("")) {
 
+                                    // hash the password
                                     String hash = Passwordhash.hashpw(password,Passwordhash.gensalt(12));
+
+                                    // add user to database
                                     String StringRegister = DBHandler.register(username, mailadresse, hash);
 
                                     if (StringRegister.equals("Insert Succesfull")) {
 
+                                        // login to get userID and UserType
                                         String StringReturn = DBHandler.login(username,hash);
 
                                         if (!StringReturn.equals("register not success") || StringReturn != null) {
+
                                             int i = StringReturn.indexOf("_");
                                             String bid = StringReturn.substring(0, i);
                                             String type = StringReturn.substring(i + 1, StringReturn.length());
 
+                                            // set userID and userType to saved data on the device
                                             SharedPreferences.Editor editor = getSharedPreferences("openrunning", MODE_PRIVATE).edit();
                                             editor.putString("bid", bid);
                                             editor.putString("type", type);

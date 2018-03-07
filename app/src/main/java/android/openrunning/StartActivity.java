@@ -234,6 +234,17 @@ public class StartActivity extends AppCompatActivity
             Intent myIntent = new Intent(StartActivity.this, DeleteRouteActivity.class);
             StartActivity.this.startActivity(myIntent);
 
+        } else if (id == R.id.nav_logout_user) {
+
+            // set the type und bid to empty
+            SharedPreferences.Editor editor = getSharedPreferences("openrunning", MODE_PRIVATE).edit();
+            editor.putString("bid", "");
+            editor.putString("type", "");
+            editor.commit();
+
+            Intent myIntent = new Intent(StartActivity.this, LoginActivity.class);
+            StartActivity.this.startActivity(myIntent);
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -241,16 +252,22 @@ public class StartActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * sets Visibility of Menu-Items true
+     */
     private void hideItem(){
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         Menu nav_Menu = navigationView.getMenu();
 
+        // Menu-Items depends on which userType the current user has.
         SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
         String type = prefs.getString("type", "");
 
+        // shows advanced settings if user has usertype 2
         if (type.equals("2")) {
             nav_Menu.findItem(R.id.nav_release).setVisible(true);
         }else if (type.equals("3")) {
+            // shows administration settings if user has usertype 3
             nav_Menu.findItem(R.id.nav_release).setVisible(true);
             nav_Menu.findItem(R.id.nav_delete_route).setVisible(true);
             nav_Menu.findItem(R.id.nav_delete_user).setVisible(true);

@@ -20,6 +20,10 @@
             android:id="@+id/nav_add"
             android:icon="@drawable/plus_circle_outline"
             android:title="Strecke hinzufügen" />
+        <item
+            android:id="@+id/nav_logout_user"
+            android:icon="@drawable/ic_logout_24dp"
+            android:title="Abmelden" />
     </group>
 
     <item android:title="Support Bereich"
@@ -48,5 +52,4 @@
                 android:title="Strecke löschen" />
         </menu>
     </item>
-
 </menu>
