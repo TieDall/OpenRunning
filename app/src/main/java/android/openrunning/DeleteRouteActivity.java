@@ -62,7 +62,7 @@ public class DeleteRouteActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_result);
+        setContentView(R.layout.activity_delete_route);
         routes = new ArrayList<>();
         map= (MapView) findViewById(R.id.map);
         // for osmdroid
@@ -71,7 +71,7 @@ public class DeleteRouteActivity extends AppCompatActivity
 
         // toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("gemeldete Strecken:");
+        toolbar.setTitle("gemeldete Strecken löschen?");
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -135,8 +135,8 @@ public class DeleteRouteActivity extends AppCompatActivity
         }).start();
 
 
-        FloatingActionButton fab_Next = (FloatingActionButton) findViewById(R.id.fab_Next);
-        fab_Next.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab_delete = (FloatingActionButton) findViewById(R.id.fab_delete);
+        fab_delete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
                 new Thread(new Runnable() {
@@ -162,8 +162,8 @@ public class DeleteRouteActivity extends AppCompatActivity
             }
         });
 
-        FloatingActionButton fab_Back = (FloatingActionButton) findViewById(R.id.fab_Back);
-        fab_Back.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab_hold = (FloatingActionButton) findViewById(R.id.fab_hold);
+        fab_hold.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
                 new Thread(new Runnable() {
@@ -266,7 +266,6 @@ public class DeleteRouteActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.actions_search_result, menu);
         return true;
     }
 
@@ -395,7 +394,7 @@ public class DeleteRouteActivity extends AppCompatActivity
                     public void run() {
 
                         final IMapController mapController = map.getController();
-                        mapController.setZoom(12);
+                        mapController.setZoom(14);
                         mapController.setCenter(waypoints.get(0));
                         map.invalidate();
                         waypoints.clear();
