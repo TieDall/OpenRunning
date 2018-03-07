@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:orientation="vertical"
     tools:context=".SearchResultActivity">
 
@@ -17,7 +18,9 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/textViewRating"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView10" />
+        app:layout_constraintStart_toEndOf="@+id/textView10"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="8dp" />
 
     <TextView
         android:id="@+id/textView10"
@@ -28,20 +31,20 @@
         android:text="Streckenlänge:"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/textView7"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="16dp" />
 
     <org.osmdroid.views.MapView
         android:id="@+id/map"
         tilesource="Mapnik"
         android:layout_width="0dp"
-        android:layout_height="420dp"
-        android:layout_marginBottom="1dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="50dp"
-        app:layout_constraintBottom_toTopOf="@+id/fab_delete"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/fab_hold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -54,7 +57,8 @@
         android:text="Bewertung:"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="16dp" />
 
     <TextView
         android:id="@+id/textViewRating"
@@ -66,7 +70,9 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView7" />
+        app:layout_constraintStart_toEndOf="@+id/textView7"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="8dp" />
 
     <TextView
         android:id="@+id/textViewCounter"
@@ -77,32 +83,33 @@
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@+id/map"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginRight="8dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_hold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginStart="96dp"
+        android:layout_marginStart="55dp"
         android:clickable="true"
+        android:src="@drawable/ic_restore_black_24dp"
         app:layout_constraintBottom_toTopOf="@+id/textView10"
-        app:layout_constraintStart_toStartOf="@+id/map"
-        app:layout_constraintTop_toBottomOf="@+id/map"
+        app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="?android:attr/homeAsUpIndicator"
-        android:src="@drawable/ic_restore_black_24dp"/>
+        android:layout_marginLeft="55dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="100dp"
+        android:layout_marginEnd="55dp"
         android:clickable="true"
+        android:src="@drawable/delete"
         app:layout_constraintBottom_toTopOf="@+id/textViewLength"
-        app:layout_constraintEnd_toEndOf="@+id/map"
-        app:layout_constraintTop_toBottomOf="@+id/map"
+        app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="?android:attr/homeAsUpIndicator"
-        android:src="@drawable/delete"/>
+        android:layout_marginRight="55dp" />
 
 </android.support.constraint.ConstraintLayout>
