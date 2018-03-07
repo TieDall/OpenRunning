@@ -112,7 +112,7 @@ public class SearchActivity extends AppCompatActivity
                 final String length = ((EditText) findViewById(R.id.editTextRouteLength)).getText().toString();
                 final float rating = ((RatingBar) findViewById(R.id.ratingBar)).getRating();
 
-                if (!distance.isEmpty() || !length.isEmpty()) {
+                if (!distance.isEmpty() && !length.isEmpty()) {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
