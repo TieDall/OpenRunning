@@ -2,9 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/action_search"
+    <item
+        android:id="@+id/action_search"
+        android:enabled="false"
         android:icon="@drawable/magnify"
-        app:showAsAction="ifRoom"
-        android:title="Suchen" />
+        android:title="Suchen"
+        app:showAsAction="ifRoom" />
 
 </menu>
