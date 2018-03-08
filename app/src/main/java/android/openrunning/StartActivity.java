@@ -2,7 +2,9 @@ package android.openrunning;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -26,6 +28,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -182,6 +186,23 @@ public class StartActivity extends AppCompatActivity
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
             this.displayMap();
         } else {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(StartActivity.this);
+                    builder.setMessage("Bitte erlaube der App GPS zu nutzen. Die App kann sonst nicht verwendet werden.\nDies kann über die Einstellungen von Android vorgenommen werden. \nDie App startet immer wieder neu, bis die Berechtigung erteilt wurde.")
+                            .setCancelable(false)
+                            .setPositiveButton("Schließen", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    System.exit(0);
+                                }
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.setTitle("GPS Berechtigung fehlt!");
+                    alert.show();
+                }
+            });
 
         }
     }
