@@ -177,10 +177,8 @@ public class DeleteUserActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-        //Warum läuft das nicht?!
-        //drawer.closeDrawer(GravityCompat.START);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_delete_user);
+        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
