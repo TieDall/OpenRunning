@@ -27,7 +27,6 @@ import core.DBHandler;
 import core.Passwordhash;
 
 public class LoginActivity extends AppCompatActivity {
-    EditText UsernameEt, PasswordEt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

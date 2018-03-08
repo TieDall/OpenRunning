@@ -371,7 +371,7 @@ public class SearchResultActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-    
+
 
     // for detailed information see "roadCalc" function in "CreateRouteActivity"
     private void roadCalc() {
