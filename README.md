@@ -316,3 +316,6 @@ In der Klasse "DBHandler.java" ist der String "DB_IP_ADDRESS" zu ersetzen mit de
 private static final String DB_PROTOCOL = "http";
 private static final String DB_IP_ADDRESS = "192.168.178.20";
 ```
+
+### Anpassung CreateRouteActivity.java, DeleteRouteActivity.java, SearchActivity.java, SearchResultActivity.java
+In den übersteheneden Klassen muss jeweils folgende Variable angepasst werden "private String apiKey". Der Key wird zur Streckenberechnung benötigt. Hierfür muss man sich auf "http://developer.mapquest.com" registrieren. Der Key, der in den Klassen steht, läuft am 25.03.2018 ab.
