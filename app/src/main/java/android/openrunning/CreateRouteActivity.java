@@ -58,6 +58,8 @@ public class CreateRouteActivity extends AppCompatActivity
     private String apiKey = "wpXplEIDvQLPHri8h8bftUopL7yvVgmW";
 
     private ArrayList<GeoPoint> waypoints;
+
+    //Seperator used when route is written to database
     private String geopointSeperator = ";";
     private String coordinateSeperator = "_";
 
@@ -94,19 +96,22 @@ public class CreateRouteActivity extends AppCompatActivity
                     public void run() {
                         String waypointsAsString = "";
                         for (GeoPoint waypoint : waypoints){
+                            //creating string with routes, which is written to database
                             waypointsAsString += String.valueOf(waypoint.getLatitude()) + coordinateSeperator + String.valueOf(waypoint.getLongitude()) + geopointSeperator;
                         }
 
                         SharedPreferences prefs = getSharedPreferences("openrunning", MODE_PRIVATE);
                         String bid = prefs.getString("bid", null);
 
+                        //checking wether writing to database is successfull or not
                         boolean successfull = DBHandler.addRoute(bid, "", ""+length, waypointsAsString);
                         if (successfull){
 
-                            // Alert Dialog for successfull adding new route
+                            // Alert Dialog for adding new route successfully
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    //alert message to notify the user, that route was created successful
                                     AlertDialog.Builder builder = new AlertDialog.Builder(CreateRouteActivity.this);
                                     builder.setMessage("Danke, dass du deine Strecke mit der Community teilst. ")
                                             .setCancelable(false)
@@ -151,6 +156,8 @@ public class CreateRouteActivity extends AppCompatActivity
             }
         });
 
+        // floating action button to delete last created marker
+        // deletes marker in order they were added
         FloatingActionButton fab_undo = (FloatingActionButton) findViewById(R.id.fab_undo);
         fab_undo.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -158,6 +165,7 @@ public class CreateRouteActivity extends AppCompatActivity
                     waypoints.remove((waypoints.size() - 1));
                     map.invalidate();
 
+                    // deleting road overlay if existing
                     if (map.getOverlays().contains(roadOverlay)) {
 
                         map.getOverlays().remove(roadOverlay);
@@ -167,6 +175,8 @@ public class CreateRouteActivity extends AppCompatActivity
                     map.getOverlays().remove(map.getOverlays().size() - 1);
                     map.invalidate();
 
+                    // only drawing route if there are two or more waypoints
+                    // --> prevents crashes while route creation
                     if (waypoints.size() >= 2) {
 
                         roadCalc();
@@ -216,19 +226,18 @@ public class CreateRouteActivity extends AppCompatActivity
         return false;
     }
 
+    // to add markers if long pressed on map
     @Override
     public boolean longPressHelper(GeoPoint p) {
-        //Toast.makeText(this, "Tapped", Toast.LENGTH_SHORT).show();
-
+        //getting coordinates and adding the point to waypoint array
         GeoPoint point = new GeoPoint(p.getLatitude(), p.getLongitude());
         waypoints.add(point);
 
+        //showing marker on map
         Marker mapMarker = new Marker(map);
         mapMarker.setPosition(point);
-//        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         map.getOverlays().add(mapMarker);
         map.invalidate();
-
 
         //onClickListener to delete single markers
         mapMarker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
@@ -248,7 +257,7 @@ public class CreateRouteActivity extends AppCompatActivity
             }
         });
 
-
+        //preventing crash
         if (waypoints.size() >= 2) {
 
             roadCalc();
@@ -258,7 +267,6 @@ public class CreateRouteActivity extends AppCompatActivity
         return true;
     }
 
-
     /**
      * Display map with position, zoomed and position overlay.
      */
@@ -267,6 +275,7 @@ public class CreateRouteActivity extends AppCompatActivity
         map = (MapView) findViewById(R.id.map_create_route);
         map.setTileSource(TileSourceFactory.MAPNIK);
 
+        // displaying clickable zoom buttons on map
         map.setBuiltInZoomControls(true);
         map.setMultiTouchControls(true);
 
@@ -422,8 +431,10 @@ public class CreateRouteActivity extends AppCompatActivity
         }
     }
 
+    // function to calculate route
     private void roadCalc() {
 
+        // removing all existing road overlays
         if (map.getOverlays().contains(roadOverlay)){
 
             map.getOverlays().remove(roadOverlay);
@@ -438,12 +449,16 @@ public class CreateRouteActivity extends AppCompatActivity
         new Thread(new Runnable() {
             public void run() {
 
+                // creating new array by adding first waypoint again as last waypoint
+                // needed to display the route as a circuit
                 ArrayList<GeoPoint> bufferwaypoints = (ArrayList<GeoPoint>) waypoints.clone();
                 bufferwaypoints.add(waypoints.get(0));
 
+                // calculating the route and their lenght
                 Road road = roadManager.getRoad(bufferwaypoints);
                 length = road.mLength;
 
+                // adding the route to map
                 roadOverlay = RoadManager.buildRoadOverlay(road);
                 map.getOverlays().add(roadOverlay);
 

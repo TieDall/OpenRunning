@@ -415,6 +415,7 @@ public class SearchResultActivity extends AppCompatActivity
         }
     }
 
+    // for detailed information see "roadCalc" function in "CreateRouteActivity"
     private void roadCalc() {
 
         if (map.getOverlays().contains(roadOverlay)){
@@ -443,6 +444,7 @@ public class SearchResultActivity extends AppCompatActivity
                     @Override
                     public void run() {
 
+                        //adding zoom buttons and zoom on shown map
                         final IMapController mapController = map.getController();
                         mapController.setZoom(14);
                         mapController.setCenter(waypoints.get(0));
