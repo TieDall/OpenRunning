@@ -310,7 +310,7 @@ getRoutetoStatus.php
  ```
 
 ### Anpassung DBHandler.java
-In der Klasse "DBHandler.java" ist der String "DB_IP_ADDRESS" zu ersetzen mit der IP der Datenbank und ggf. "DB_PROTOCOL".
+In der Klasse "DBHandler.java" ist der String "DB_IP_ADDRESS" mit der IP der Datenbank zu ersetzen. Gegebenenfalls muss der String "DB_PROTOCOL" entsprechend des verwendeten Protokolls angepasst werden.
 ```
 // Change variables below for configuration
 private static final String DB_PROTOCOL = "http";
