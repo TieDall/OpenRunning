@@ -2,10 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/action_favorite"
+    <item
+        android:id="@+id/action_favorite"
+        android:enabled="false"
         android:icon="@drawable/star_outline"
-        app:showAsAction="ifRoom"
-        android:title="Favoriten" />
+        android:title="Favoriten"
+        app:showAsAction="ifRoom" />
 
     <item android:id="@+id/action_report"
         android:icon="@drawable/message_alert"

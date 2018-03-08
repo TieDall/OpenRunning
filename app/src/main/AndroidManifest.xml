@@ -21,27 +21,34 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".RegisterActivity" />
+        <activity android:name=".LoginActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".RegisterActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".CreateRouteActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".StartActivity"
             android:label="@string/title_activity_start"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".SearchActivity"
             android:label="@string/title_activity_search"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".SearchResultActivity"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".DeleteUserActivity"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".DeleteRouteActivity"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
