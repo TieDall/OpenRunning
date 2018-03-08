@@ -20,14 +20,9 @@ import java.util.ArrayList;
 
 public class DBHandler {
 
-    public static final int LIMITED_USER = 0;
-    public static final int NORMAL_USER = 1;
-    public static final int EXPERIENCED_USER = 2;
-    public static final int ADMIN_USER = 3;
-
     // Change variables below for configuration
     private static final String DB_PROTOCOL = "http";
-    private static final String DB_IP_ADDRESS = "192.168.178.27";
+    private static final String DB_IP_ADDRESS = "10.10.123.0";
 
     /**
      * adds a new Route to the database with bis, describtion, length and the waypoints
